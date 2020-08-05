@@ -52,6 +52,10 @@ var UserSchema = new mongoose.Schema({
             data: String,
             default: ""
         },
+        resetPasswordLink: {
+            data: String,
+            default: ""
+        },
         is_activated : {
             type: Boolean,
             default: false
