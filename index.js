@@ -6,9 +6,18 @@ const expressValidator = require("express-validator");
 const cors = require("cors");
 const bodyparser = require("body-parser");
 
-mongoose.connect('mongodb+srv://gaminatic:gaminatic@gaminatic.mus8o.mongodb.net/gaminatic?retryWrites=true&w=majority' , { useNewUrlParser: true, useUnifiedTopology: true } );
-mongoose.set('useFindAndModify', false);
 
+mongoose.connect('mongodb+srv://gaminatic:gaminatic@gaminatic.mus8o.mongodb.net/gaminatic?retryWrites=true&w=majority' , { useNewUrlParser: true, useUnifiedTopology: true } );
+
+//Routes
+const authRoutes = require("./routes/auth");
+
+
+app.use(bodyparser.json());
+app.use(cookieparser());
+app.use(cors());
+
+app.use('/', authRoutes);
 
 
 app.listen( process.env.PORT||8080);
