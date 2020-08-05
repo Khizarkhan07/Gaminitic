@@ -238,3 +238,34 @@ exports.forgotPassword = (req, res) => {
         });
     });
 };
+
+exports.resetPassword = (req, res) => {
+    const { resetPasswordLink, newPassword } = req.body;
+
+    User.findOne({ resetPasswordLink }, (err, user) => {
+        // if err or no user
+        if (err || !user)
+            return res.json({
+                error: "Invalid Link!"
+            });
+
+        const updatedFields = {
+            password: newPassword,
+            resetPasswordLink: ""
+        };
+
+        user = _.extend(user, updatedFields);
+        user.updated = Date.now();
+
+        user.save((err, result) => {
+            if (err) {
+                return res.json({
+                    error: err
+                });
+            }
+            res.json({
+                message: `Great! Now you can login with your new password.`
+            });
+        });
+    });
+};

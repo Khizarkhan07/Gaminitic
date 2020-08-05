@@ -42,7 +42,23 @@ const userValidationRules = () => {
 ]
 }
 
+
+const passwordlidationRules = () => {
+    return [
+        body("newPassword", "password is required").notEmpty(),
+        body("newPassword").isLength({
+            min: 6
+        })
+            .withMessage("Password must be atlest 6 chracrters long")
+            .matches(/\d/)
+            .withMessage("Password must contain atleast one digit"),
+
+    ]
+}
+
+
 module.exports = {
     userValidationRules,
+    passwordlidationRules,
     validate,
 }
