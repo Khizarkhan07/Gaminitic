@@ -1,6 +1,7 @@
 const  User = require("../models/user");
 const { sendEmail } = require("../helpers");
 const jwt = require("jsonwebtoken");
+const _ = require("lodash");
 require('dotenv').config()
 
 exports.signup = async (req, res, next)=>{
@@ -64,3 +65,58 @@ verifyAccount = (req, res) => {
     });
 
 };
+
+exports.verifyLink = (req, res) => {
+    const { verifyAccountLink } = req.body;
+    User.findOne({ verifyAccountLink }, (err, user) => {
+        // if err or no user
+        if (err || !user)
+            return res.status("401").json({
+                error: "Invalid Link!"
+            });
+
+        const updatedFields = {
+            verifyAccountLink: "",
+            is_activated: true
+        };
+
+        user = _.extend(user, updatedFields);
+        user.updated = Date.now();
+        user.save((err, result) => {
+            if (err) {
+                return res.status(400).json({
+                    error: err
+                });
+            }
+            res.json({
+                message: `Great! You have verified your account`
+            });
+        });
+    });
+};
+
+
+exports.signin =  (req, res) => {
+    req.body.email= req.body.email.toLowerCase();
+    const {email , password} = req.body;
+
+    User.findOne({email}, (err, user)=>{
+        if(err || !user){
+            return res.json({
+                error: "User with this email doesnot exist!"
+            })
+        }
+        if (!user.authenticate(password)){
+            return res.json({
+                error: "Email and password doesnot match!"
+            })
+        }
+
+        const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
+
+        res.cookie("t", token, {expire: Date.now()+999});
+
+        const {_id, name, email, role, verified, adminVerified}= user;
+        return res.json({user: {_id, name , email, token}});
+    });
+}
