@@ -22,6 +22,7 @@
     "nodemailer-sendgrid-transport": "^0.2.0",
     "nodemon": "^2.0.4",
     "sendotp": "^1.2.9",
+    "twilio": "^3.48.1",
     "uuid": "^8.3.0"
   }
 }

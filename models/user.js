@@ -23,6 +23,9 @@ var UserSchema = new mongoose.Schema({
         user_number: {
             type:String,
         },
+        otp: {
+            type:String,
+        },
         salt: String,
         created: {
             type: Date,

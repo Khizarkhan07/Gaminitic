@@ -3,6 +3,10 @@ const { sendEmail } = require("../helpers");
 const jwt = require("jsonwebtoken");
 const _ = require("lodash");
 require('dotenv').config()
+const accountSid = 'AC895edaa2425fe883fd4414c9607a029c';
+const authToken = 'e12a6875deb23866ef8eaa77afd9c436';
+const client = require('twilio')(accountSid, authToken);
+
 
 exports.signup = async (req, res, next)=>{
     req.body.email=req.body.email.toLowerCase();
@@ -118,5 +122,66 @@ exports.signin =  (req, res) => {
 
         const {_id, name, email, role, verified, adminVerified}= user;
         return res.json({user: {_id, name , email, token}});
+    });
+}
+
+exports.sendOtp = (req, res) => {
+    const user_number = req.body.user_number;
+    console.log(user_number);
+
+    User.findOne({ user_number }, (err, user) => {
+        // if err or no user
+        if (err || !user)
+            return res.json({
+                error: "User with that phone number does not exist!"
+            });
+
+        // generate a otp
+        const otp= (Math.floor(100000 + Math.random() * 900000));
+
+
+    return user.updateOne({ otp: otp }, (err, success) => {
+        if (err) {
+            return res.json({ message: err });
+        } else {
+            client.messages
+                .create({
+                    body: `This is your gaminatic login otp: ${otp}`,
+                    from: '+19097841248',
+                    to: user_number
+                })
+                .then(message => res.json({message: "Otp is send to your phone number"}));
+
+        }
+    });
+});
+
+}
+
+
+exports.Otpsignin =  (req, res) => {
+    const otp= req.body.otp;
+
+    User.findOne({otp}, (err, user)=>{
+        if(err || !user){
+            return res.json({
+                error: "Invalid Otp"
+            })
+        }
+
+        return user.updateOne({ otp: "" }, (err, success) => {
+            if (err) {
+                return res.json({ message: err });
+            } else {
+                const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
+
+                res.cookie("t", token, {expire: Date.now()+999});
+
+                const {_id, name, email}= user;
+                return res.json({user: {_id, name , email, token}});
+            }
+        });
+
+
     });
 }
