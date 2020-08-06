@@ -30,3 +30,11 @@ exports.sendRequest = (req, res) => {
         }
     } )
 }
+
+exports.viewPending = (req, res) => {
+    const {receiver_id} = req.body;
+    Connection.find({receiver_id: receiver_id, is_friend: false}).populate('sender_id', 'name email')
+        .exec((err, connection)=> {
+            return res.json(connection)
+        })
+}
