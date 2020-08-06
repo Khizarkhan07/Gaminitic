@@ -17,6 +17,7 @@ const validate = (req, res, next) => {
 const userValidationRules = () => {
     return [
         body("name", "name is required").notEmpty(),
+        body("is_public", "account type is required").isBoolean().notEmpty(),
     body("biography", "biography is required").notEmpty().withMessage("Biography must be between 500 characters").isLength(
         {
             min:4,
@@ -57,8 +58,16 @@ const passwordlidationRules = () => {
 }
 
 
+
+const securityvalidationRules = () => {
+    return [
+        body("security_answer", "answer is required").notEmpty()
+    ]
+}
+
 module.exports = {
     userValidationRules,
     passwordlidationRules,
+    securityvalidationRules,
     validate,
 }

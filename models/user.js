@@ -31,7 +31,7 @@ var UserSchema = new mongoose.Schema({
             type: Date,
             default: Date.now
         },
-        update: Date,
+        updated: Date,
         photo: {
             type:String
         },
@@ -60,12 +60,22 @@ var UserSchema = new mongoose.Schema({
             type: Boolean,
             default: false
         },
+        is_public : {
+            type: Boolean,
+            require: true
+        },
         psn_tag : {
             type: String
         },
         xbox_tag : {
             type: String
         },
+        security_question : {
+            type: String
+        },
+        security_answer : {
+            type: String
+        }
 
     }
 );
@@ -100,6 +110,5 @@ UserSchema.methods= {
         }
     }
 };
-//UserSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model("User", UserSchema);

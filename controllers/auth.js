@@ -269,3 +269,95 @@ exports.resetPassword = (req, res) => {
         });
     });
 };
+
+
+exports.setQuestion = (req, res) => {
+    const {user_number, security_question, security_answer } = req.body;
+
+    User.findOne({ user_number }, (err, user) => {
+        // if err or no user
+        if (err || !user)
+            return res.json({
+                error: "Invalid phone number!"
+            });
+
+        const updatedFields = {
+            security_question: security_question,
+            security_answer: security_answer,
+        };
+
+        user = _.extend(user, updatedFields);
+        user.updated = Date.now();
+
+        user.save((err, result) => {
+            if (err) {
+                return res.json({
+                    error: err
+                });
+            }
+            res.json({
+                result
+            });
+        });
+    });
+};
+
+exports.getQuestion = (req, res) => {
+    const {user_number} = req.body;
+
+    User.findOne({ user_number }, (err, user) => {
+        // if err or no user
+        if (err || !user)
+            return res.json({
+                error: "Invalid phone number!"
+            });
+        res.json({
+            user
+        });
+    }).select("security_question user_number");
+};
+
+exports.checkAnswer = (req, res) => {
+    const {user_number, security_question, security_answer} = req.body;
+    console.log(user_number)
+    User.findOne({ user_number , security_question , security_answer }, (err, user) => {
+        // if err or no user
+        if (err || !user)
+            return res.json({
+                error: "Incorrect answer"
+            });
+        res.json({
+            success : true
+        });
+    }).select("security_question security_answer user_number");
+};
+
+exports.resetPasswordSecurity = (req, res) => {
+    const { user_number , newPassword , security_question, security_answer} = req.body;
+
+    User.findOne({ user_number, security_question, security_answer}, (err, user) => {
+        // if err or no user
+        if (err || !user)
+            return res.json({
+                error: "Invalid User!"
+            });
+
+        const updatedFields = {
+            password: newPassword,
+        };
+
+        user = _.extend(user, updatedFields);
+        user.updated = Date.now();
+
+        user.save((err, result) => {
+            if (err) {
+                return res.json({
+                    error: err
+                });
+            }
+            res.json({
+                message: `Great! Now you can login with your new password.`
+            });
+        });
+    });
+};
