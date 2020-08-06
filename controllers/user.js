@@ -78,3 +78,17 @@ exports.isOwner = (req, res, next)=>{
 };
 
 
+exports.searchUsers = (req, res)=> {
+    const name = req.query.q;
+    var pattern = new RegExp("(" +
+        name +
+        ")", 'i');
+    User.find({$or:[{name: pattern}, {email: pattern}]}, (err, user)=>{
+        if(err){
+            return res.status(400).json({error: err})
+        }
+        else {
+            res.json(user);
+        }
+    }).select("_id name email")
+};
