@@ -12,6 +12,7 @@ mongoose.connect('mongodb+srv://gaminatic:gaminatic@gaminatic.mus8o.mongodb.net/
 //Routes
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
+const connectionRoutes = require("./routes/connection");
 
 
 app.use(bodyparser.json());
@@ -20,6 +21,7 @@ app.use(cors());
 
 app.use('/', authRoutes);
 app.use('/', userRoutes);
+app.use('/', connectionRoutes);
 
 app.use(express.static('assets'));
 
