@@ -75,6 +75,9 @@ var UserSchema = new mongoose.Schema({
         },
         security_answer : {
             type: String
+        },
+        blocked : {
+            type: Boolean
         }
 
     }

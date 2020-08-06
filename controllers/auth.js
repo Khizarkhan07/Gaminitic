@@ -320,15 +320,37 @@ exports.getQuestion = (req, res) => {
 exports.checkAnswer = (req, res) => {
     const {user_number, security_question, security_answer} = req.body;
     console.log(user_number)
-    User.findOne({ user_number , security_question , security_answer }, (err, user) => {
+    User.findOne({ user_number }, (err, user) => {
         // if err or no user
         if (err || !user)
             return res.json({
-                error: "Incorrect answer"
+                error: "Incorrect phone number"
             });
-        res.json({
-            success : true
-        });
+        else {
+            User.findOne({user_number, security_question}, (err, user)=> {
+                if(err|| !user){
+                    return res.json({
+                        error: "Incorrect Question"
+                    });
+                }
+                else {
+                    User.findOne({user_number, security_question, security_answer}, (err, user)=> {
+                        if(err|| !user){
+                            return res.json({
+                                error: "Incorrect Answer"
+                            });
+                        }
+                        else {
+                            return res.json({
+                                success: true
+                            });
+                        }
+                    })
+                }
+            })
+
+        }
+
     }).select("security_question security_answer user_number");
 };
 
