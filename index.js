@@ -11,6 +11,7 @@ mongoose.connect('mongodb+srv://gaminatic:gaminatic@gaminatic.mus8o.mongodb.net/
 
 //Routes
 const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
 
 
 app.use(bodyparser.json());
@@ -18,6 +19,7 @@ app.use(cookieparser());
 app.use(cors());
 
 app.use('/', authRoutes);
+app.use('/', userRoutes);
 
 
 app.listen( process.env.PORT||8080);

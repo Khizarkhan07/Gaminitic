@@ -1,6 +1,7 @@
 const  User = require("../models/user");
 const { sendEmail } = require("../helpers");
 const jwt = require("jsonwebtoken");
+const expressjwt = require("express-jwt");
 const _ = require("lodash");
 require('dotenv').config()
 const accountSid = 'AC895edaa2425fe883fd4414c9607a029c';
@@ -120,7 +121,7 @@ exports.signin =  (req, res) => {
 
         res.cookie("t", token, {expire: Date.now()+999});
 
-        const {_id, name, email, role, verified, adminVerified}= user;
+        const {_id, name, email}= user;
         return res.json({user: {_id, name , email, token}});
     });
 }
@@ -129,6 +130,14 @@ exports.signout = (req, res)=> {
     res.clearCookie("t");
     return res.json({message: "Signout successfull"});
 }
+
+exports.requireSignin = expressjwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: "auth",
+    algorithms: ['HS256']
+});
+
+
 
 exports.sendOtp = (req, res) => {
     const user_number = req.body.user_number;
