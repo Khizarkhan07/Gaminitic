@@ -21,5 +21,7 @@ app.use(cors());
 app.use('/', authRoutes);
 app.use('/', userRoutes);
 
+app.use(express.static('assets'));
+
 
 app.listen( process.env.PORT||8080);
