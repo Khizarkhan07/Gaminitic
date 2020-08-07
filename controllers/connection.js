@@ -81,3 +81,37 @@ exports.acceptRequest = (req, res) => {
         }
     } )
 }
+
+
+exports.rejectRequest = (req, res) => {
+    const {sender_id, receiver_id} = req.body;
+
+    User.findOne({_id: sender_id} , (err, sender)=> {
+        if(err || !sender) {
+            return res.json({message: "invalid sender"})
+        }
+        else {
+            User.findOne({_id: receiver_id}, (err, receiver) => {
+                if(err || !receiver){
+                    return res.json({message: "Invalid receiver"})
+                }
+
+                Connection.findOne({receiver_id: receiver, sender_id: sender}, (err, connection)=> {
+                    if(!connection || err) {
+                        return res.json ({error: "no connection request exists"})
+                    }
+                    else {
+                        connection.deleteOne((err, connection)=> {
+                            if(err){
+                                return res.json({error: err})
+                            }
+                            else {
+                                return res.json({message: "Request Rejected"})
+                            }
+                        })
+                    }
+                })
+            })
+        }
+    } )
+}
