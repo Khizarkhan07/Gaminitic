@@ -127,6 +127,7 @@ exports.rejectRequest = (req, res) => {
 }
 
 exports.viewFriends = (req, res) => {
+
     const receiver_id = req.query.q;
     Connection.find({ $or: [ { sender_id: receiver_id  }, { receiver_id: receiver_id } ] , is_friend: true, deleted_at : null }).populate('sender_id', 'name email')
         .exec((err, connection)=> {

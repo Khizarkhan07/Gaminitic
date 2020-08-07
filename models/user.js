@@ -78,6 +78,13 @@ var UserSchema = new mongoose.Schema({
         },
         blocked : {
             type: Boolean
+        },
+        ipAddress: {
+            type:String
+        },
+        role : {
+            type: String,
+            default: "user"
         }
 
     }

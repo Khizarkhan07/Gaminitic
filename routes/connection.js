@@ -9,7 +9,7 @@ router.post("/send_request", requireSignin ,sendRequest);
 router.get("/view_pending", requireSignin ,viewPending);
 router.put("/accept_request",requireSignin ,acceptRequest);
 router.put("/reject_request", requireSignin ,rejectRequest);
-router.get("/get_friends", requireSignin ,viewFriends);
+router.get("/get_friends" ,viewFriends);
 
 router.param("userId", userById);
 

@@ -7,15 +7,25 @@ require('dotenv').config()
 const accountSid = 'AC895edaa2425fe883fd4414c9607a029c';
 const authToken = 'e12a6875deb23866ef8eaa77afd9c436';
 const client = require('twilio')(accountSid, authToken);
+const requestIp = require('request-ip');
 
 
 exports.signup = async (req, res, next)=>{
+    const ipAddress = requestIp.getClientIp(req);
+    req.body.ipAddress = ipAddress;
+    console.log(ipAddress)
     req.body.email=req.body.email.toLowerCase();
     const email = req.body.email;
     const userExists = await User.findOne({email:req.body.email});
     if(userExists){
         return res.json({
             error: "Email is taken"
+        });
+    }
+    const numberExists = await User.findOne({user_number:req.body.user_number});
+    if(numberExists){
+        return res.json({
+            error: "Phone number is taken"
         });
     }
 
