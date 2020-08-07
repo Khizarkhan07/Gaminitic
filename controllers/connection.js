@@ -34,7 +34,7 @@ exports.sendRequest = (req, res) => {
 
 exports.viewPending = (req, res) => {
     const {receiver_id} = req.body;
-    Connection.find({receiver_id: receiver_id, is_friend: false}).populate('sender_id', 'name email')
+    Connection.find({receiver_id: receiver_id, is_friend: false, deleted_at: null}).populate('sender_id', 'name email')
         .exec((err, connection)=> {
             return res.json(connection)
         })
@@ -101,17 +101,35 @@ exports.rejectRequest = (req, res) => {
                         return res.json ({error: "no connection request exists"})
                     }
                     else {
-                        connection.deleteOne((err, connection)=> {
-                            if(err){
-                                return res.json({error: err})
+                        const updatedFields = {
+                            is_friend: false,
+                        };
+
+                        connection = _.extend(connection, updatedFields);
+                        connection.deleted_at = Date.now();
+
+                        connection.save((err, result) => {
+                            if (err) {
+                                return res.status(400).json({
+                                    error: err
+                                });
                             }
-                            else {
-                                return res.json({message: "Request Rejected"})
-                            }
-                        })
+                            res.json({
+                                result,
+                                message: `Request rejected`
+                            });
+                        });
                     }
                 })
             })
         }
     } )
+}
+
+exports.viewFriends = (req, res) => {
+    const receiver_id = req.query.q;
+    Connection.find({ $or: [ { sender_id: receiver_id  }, { receiver_id: receiver_id } ] , is_friend: true, deleted_at : null }).populate('sender_id', 'name email')
+        .exec((err, connection)=> {
+            return res.json(connection)
+        })
 }

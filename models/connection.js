@@ -13,6 +13,13 @@ const ConnectionsSchema = new moongose.Schema({
     is_friend: {
         type: Boolean,
         default: false
+    },
+    created_at :{
+        type: Date,
+        default: Date.now
+    },
+    deleted_at :{
+        type: Date
     }
 
 });
