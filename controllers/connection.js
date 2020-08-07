@@ -15,7 +15,7 @@ exports.sendRequest = (req, res) => {
                     return res.json({message: "Invalid receiver"})
                 }
 
-                Connection.findOne({receiver_id: receiver, sender_id: sender}, (err, connection)=> {
+                Connection.findOne({receiver_id: receiver, sender_id: sender, deleted_at :null}, (err, connection)=> {
                     if(connection){
                         return res.json({connection, message: "Request already sent"})
                     }
