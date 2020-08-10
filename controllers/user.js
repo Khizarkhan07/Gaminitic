@@ -1,5 +1,6 @@
 const _ = require("lodash");
 const  User = require("../models/user");
+const  Block = require("../models/block_history");
 const fs = require("fs");
 const formidable = require("formidable");
 
@@ -110,6 +111,64 @@ exports.changePrivacy = (req, res) => {
                 return res.json(err)
             }
             return res.json({user, message: "Privacy changed"})
+        })
+    })
+}
+
+exports.blockuser = (req, res) => {
+    let block = new Block();
+    block.user_blocked = req.profile;
+    block.reason = req.body.reason;
+    block.save((err, result)=> {
+        if(err || !result){
+            return res.json({err: "User not blocked"})
+        }
+        else {
+            User.findById( req.auth._id, (err, user)=> {
+                if(err||!user){
+                    return res.json({err})
+                }
+                else {
+                    result.hashed_password= undefined;
+                    result.salt= undefined;
+                    result.verifyAccountLink= undefined;
+                    result.role = undefined;
+                    result.blocked_users= undefined;
+                    user.blocked_users.push(result);
+                    user.save((err, user)=> {
+                        if(err||!user) {
+                            return res.json({err: "error occured while blocking"})
+                        }
+                        else {
+                            return res.json({ message: "User blocked"})
+                        }
+                    })
+                }
+            })
+        }
+    })
+
+}
+
+exports.unblockuser = (req, res) => {
+    Block.find({user_blocked: req.profile}, (err, history)=> {
+        if(err||!history){
+            return res.json ({err: "Error while unblocking"})
+
+        }
+        updatedFields ={
+            unblocked: true,
+            unblocked_at: Date.now()
+        }
+        history = _.extend(history, updatedFields);
+
+        history.save((err, result)=> {
+            if(err||!result){
+                return res.json ({err: "Error while unblocking"})
+            }
+            else {
+                return res.json({message: "User unblocked"})
+            }
         })
     })
 }
