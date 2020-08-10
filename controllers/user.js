@@ -68,7 +68,8 @@ exports.updateuser = (req, res, next) => {
 
 
 exports.isOwner = (req, res, next)=>{
-    const autherized = req.profile && req.auth && req.profile._id === req.auth._id;
+
+    const autherized = req.profile && req.auth && req.profile._id == req.auth._id;
     if(!autherized){
         return res.status(403).json({
             error: "You are not athorized to perform this action!"
@@ -92,3 +93,23 @@ exports.searchUsers = (req, res)=> {
         }
     }).select("_id name email")
 };
+
+exports.changePrivacy = (req, res) => {
+    const {userId} = req.params;
+
+    User.findOne({_id:userId}, (err, user)=> {
+        if(err|| !user){
+            return res.json("invalid user id")
+        }
+        updatedFiled = {
+            is_public : !user.is_public
+        }
+        user = _.extend(user, updatedFiled);
+        user.save((err, user)=> {
+            if(err || !user){
+                return res.json(err)
+            }
+            return res.json({user, message: "Privacy changed"})
+        })
+    })
+}
