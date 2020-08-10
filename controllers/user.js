@@ -172,3 +172,26 @@ exports.unblockuser = (req, res) => {
         })
     })
 }
+
+exports.unblockuser = (req, res) => {
+    Block.findById(req.body.blockId, (err, block)=> {
+        if(err||!block){
+            return res.json ({err: "Error while unblocking"})
+
+        }
+        updatedFields ={
+            unblocked: true,
+            unblocked_at: Date.now()
+        }
+        block = _.extend(block, updatedFields);
+
+        block.save((err, result)=> {
+            if(err||!result){
+                return res.json ({err: "Error while unblocking"})
+            }
+            else {
+                return res.json({message: "User unblocked"})
+            }
+        })
+    })
+}
