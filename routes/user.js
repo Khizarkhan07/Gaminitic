@@ -11,7 +11,7 @@ router.get("/searchUser", requireSignin ,searchUsers);
 // Block/unblock routes
 router.put("/block/:userId", requireSignin ,blockuser)
 router.put("/unblock/:userId", requireSignin ,unblockuser)
-router.get("/get_blocked_users/", getblockeduser )
+router.get("/get_blocked_users/:userId", getblockeduser )
 
 
 router.param("userId", userById);

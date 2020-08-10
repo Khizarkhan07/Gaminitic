@@ -13,6 +13,7 @@ mongoose.connect('mongodb+srv://gaminatic:gaminatic@gaminatic.mus8o.mongodb.net/
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const connectionRoutes = require("./routes/connection");
+const scheduleRoutes = require("./routes/schedule");
 const adminRoutes = require("./routes/admin");
 
 
@@ -24,6 +25,7 @@ app.use('/', authRoutes);
 app.use('/', userRoutes);
 app.use('/', connectionRoutes);
 app.use('/', adminRoutes);
+app.use('/', scheduleRoutes);
 
 app.use(express.static('assets'));
 

@@ -174,7 +174,7 @@ exports.unblockuser = (req, res) => {
 }
 
 exports.getblockeduser = (req, res) => {
-    User.findById(req.body.userId)
+    User.findById(req.params.userId)
         .populate({
             path: 'blocked_users',
             match: { unblocked: false },
