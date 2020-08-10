@@ -151,8 +151,8 @@ exports.blockuser = (req, res) => {
 }
 
 exports.unblockuser = (req, res) => {
-    Block.find({user_blocked: req.profile}, (err, history)=> {
-        if(err||!history){
+    Block.findById(req.body.blockId, (err, block)=> {
+        if(err||!block){
             return res.json ({err: "Error while unblocking"})
 
         }
@@ -160,9 +160,9 @@ exports.unblockuser = (req, res) => {
             unblocked: true,
             unblocked_at: Date.now()
         }
-        history = _.extend(history, updatedFields);
+        block = _.extend(block, updatedFields);
 
-        history.save((err, result)=> {
+        block.save((err, result)=> {
             if(err||!result){
                 return res.json ({err: "Error while unblocking"})
             }

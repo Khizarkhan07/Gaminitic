@@ -11,8 +11,8 @@ router.get("/searchUser", requireSignin ,changePrivacy);
 
 
 // Block/unblock routes
-router.post("/block/:userId", requireSignin ,blockuser)
-router.post("/unblock/:userId", requireSignin ,unblockuser)
+router.put("/block/:userId", requireSignin ,blockuser)
+router.put("/unblock/", requireSignin ,unblockuser)
 router.param("userId", userById);
 
 module.exports = router;
