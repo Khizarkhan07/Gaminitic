@@ -16,6 +16,7 @@ const connectionRoutes = require("./routes/connection");
 const scheduleRoutes = require("./routes/schedule");
 const gameRoutes = require("./routes/game");
 const adminRoutes = require("./routes/admin");
+const inviteRoutes = require("./routes/invite");
 
 
 app.use(bodyparser.json());
@@ -28,6 +29,7 @@ app.use('/', connectionRoutes);
 app.use('/', adminRoutes);
 app.use('/', scheduleRoutes);
 app.use('/', gameRoutes);
+app.use('/', inviteRoutes);
 
 app.use(express.static('assets'));
 
