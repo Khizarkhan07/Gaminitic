@@ -63,3 +63,12 @@ exports.setschedule = (req, res) => {
         }
     })
 }
+
+exports.getschedule = (req, res)=> {
+    Schedule.findOne({user_id: req.profile}, (err,schedule)=> {
+        if(err || !schedule){
+            return res.json({err: "No schedule found for this user"})
+        }
+        return res.json(schedule);
+    })
+}
