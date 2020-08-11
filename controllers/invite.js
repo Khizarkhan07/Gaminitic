@@ -90,8 +90,8 @@ exports.acceptInvites = (req, res)=> {
                           $or: [
                               { user1_id: invite.sender_id}, { user1_id: invite.receiver_id},
                               { user2_id: invite.sender_id}, { user2_id: invite.receiver_id},
-                          ]
-                      }, {match_time: {$gte:olddate}}, {match_time: {$lte:newDateObj}}
+                          ], match_time: {$gte:olddate}, match_time: {$lte:newDateObj}
+                      }
                       ,(err, match)=> {
                           if(match){
                               return res.json ({error : "Either of both players have already a match at that time."});
@@ -117,5 +117,16 @@ exports.acceptInvites = (req, res)=> {
             })
 
         }
+    })
+}
+
+exports.upcoming = (req, res) => {
+
+    Match.find( { $or: [ {user1_id: req.profile}, {user2_id: req.profile } ], match_time: {$gte: new Date(Date.now())}  }, (err, match) =>{
+
+        if(err) {
+            return res.json(err);
+        }
+        return res.json(match);
     })
 }
