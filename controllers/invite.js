@@ -130,3 +130,14 @@ exports.upcoming = (req, res) => {
         return res.json(match);
     })
 }
+
+exports.matchesWon = (req, res) => {
+
+    Match.find( {winner_id: req.profile}, (err, match) =>{
+
+        if(err) {
+            return res.json(err);
+        }
+        return res.json(match);
+    })
+}
