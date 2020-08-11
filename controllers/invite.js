@@ -53,3 +53,14 @@ exports.sendInvite = (req, res) => {
         }
     })
 }
+
+exports.pendingInvites =(req, res)=> {
+    Invite.findOne({receiver_id: req.profile , status: false}, (err, invites)=> {
+        if(err || !invites){
+            return res.json ({error : "Could not find any invites"});
+        }
+        else {
+            return res.json (invites);
+        }
+    })
+}
