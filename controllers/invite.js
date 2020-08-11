@@ -141,3 +141,26 @@ exports.matchesWon = (req, res) => {
         return res.json(match);
     })
 }
+
+exports.matcheslost = (req, res) => {
+
+    Match.find( {loser_id: req.profile}, (err, match) =>{
+
+        if(err) {
+            return res.json(err);
+        }
+        return res.json(match);
+    })
+}
+
+
+exports.disputes = (req, res) => {
+
+    Match.find( {$or: [ {status: {$eq: 'indispute'}}, {dispute_user_id: req.profile } ]}, (err, match) =>{
+
+        if(err) {
+            return res.json(err);
+        }
+        return res.json(match);
+    })
+}

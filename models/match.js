@@ -1,6 +1,9 @@
 const moongose = require ("mongoose");
 
 const matches = new moongose.Schema({
+    status:{
+      type: String
+    },
     match_time : {
         type: Date
     },
