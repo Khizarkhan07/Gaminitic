@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const {setschedule, getschedule} = require("../controllers/schedule");
+const {setschedule, getschedule, updateschedule} = require("../controllers/schedule");
 const {userById} = require("../controllers/user");
 const {requireSignin} = require("../controllers/auth");
 
-router.post('/set_schedule/:userId'  , setschedule)
+router.post('/set_schedule/:userId', requireSignin  , setschedule);
+router.put('/update_schedule/', requireSignin  , updateschedule);
 router.get('/get_schedule/:userId', requireSignin , getschedule)
 
 router.param("userId", userById);
