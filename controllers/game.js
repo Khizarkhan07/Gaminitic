@@ -1,5 +1,20 @@
 const Game = require("../models/game");
 
+
+exports.gameById = (req, res, next, id)=> {
+    Game.findById(id)
+        .exec((err, game)=>{
+            if(err|| !game){
+                return res.status(400).json({
+                    error: "game not found"
+                });
+            }
+            req.game = game;
+            next();
+        });
+};
+
+
 exports.createGame = async (req, res) => {
     req.body.name = req.body.name.toLowerCase();
 
@@ -14,4 +29,13 @@ exports.createGame = async (req, res) => {
         }
         return res.json(result)
     })
+}
+
+exports.getGames = (req, res) => {
+    Game.find((err, game)=> {
+        return res.json(game)
+    })
+}
+exports.getSingleGame = (req, res)=> {
+    return res.json (req.game);
 }
