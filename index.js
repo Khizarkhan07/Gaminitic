@@ -14,6 +14,7 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const connectionRoutes = require("./routes/connection");
 const scheduleRoutes = require("./routes/schedule");
+const gameRoutes = require("./routes/game");
 const adminRoutes = require("./routes/admin");
 
 
@@ -26,6 +27,7 @@ app.use('/', userRoutes);
 app.use('/', connectionRoutes);
 app.use('/', adminRoutes);
 app.use('/', scheduleRoutes);
+app.use('/', gameRoutes);
 
 app.use(express.static('assets'));
 
