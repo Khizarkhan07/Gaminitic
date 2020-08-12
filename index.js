@@ -20,6 +20,7 @@ const scheduleRoutes = require("./routes/schedule");
 const gameRoutes = require("./routes/game");
 const adminRoutes = require("./routes/admin");
 const inviteRoutes = require("./routes/invite");
+const chatRoutes = require("./routes/chat");
 
 const Chat = require("./models/chat");
 const Message = require("./models/message");
@@ -38,6 +39,7 @@ app.use('/', adminRoutes);
 app.use('/', scheduleRoutes);
 app.use('/', gameRoutes);
 app.use('/', inviteRoutes);
+app.use('/', chatRoutes);
 
 
 
