@@ -22,6 +22,7 @@ const adminRoutes = require("./routes/admin");
 const inviteRoutes = require("./routes/invite");
 
 const Chat = require("./models/chat");
+const Message = require("./models/message");
 const User = require("./models/user");
 
 
@@ -100,18 +101,25 @@ socket.on("connection", socket => {
                                     })
                                 }
                                 else {
-                                    console.log("chat exists")
+                                    let message = new Message();
+                                    message.chat_id = chat;
+                                    message.user_id= user1;
+                                    message.receiver_id= user2;
+                                    message.message = msg
+                                    message.save((err, message)=> {
+                                        if(err|| ! message){
+                                            console.log("error creating message")
+                                        }
+                                        else {
+                                            console.log("message delivered")
+                                        }
+                                    })
                                 }
                             })
                         }
                     }).select("name, email _id")
                 }
             }).select("name, email _id")
-
-            /*console.log("connected correctly to the server");
-            let chatMessage = new Chat({ message: msg, sender: "Anonymous" });
-
-            chatMessage.save();*/
 
     });
 });
