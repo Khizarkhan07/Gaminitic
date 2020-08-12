@@ -247,3 +247,26 @@ exports.uploadProof = (req, res)=>{
         })
     })
 }
+
+exports.acceptProof = (req, res) => {
+    const {match_id} = req.body;
+
+    Match.findById(match_id, (err, match)=> {
+        if(err||!match){
+            return res.json ( { error : "match not found"})
+        }
+        else {
+            match.status = "complete";
+            match.declared_winner_id= match.winner_id;
+
+            match.save((err,result)=> {
+                if(err||!result){
+                    return res.json ( { error : "match not completed"})
+                }
+
+                return res.json ( {message: "match completed"})
+
+            })
+        }
+    })
+}
