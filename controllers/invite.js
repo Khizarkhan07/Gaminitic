@@ -4,6 +4,23 @@ const Block = require("../models/block_history");
 const Invite = require("../models/invite")
 const Match = require("../models/match")
 const _ = require('lodash')
+const formidable = require('formidable')
+const fs = require("fs");
+
+exports.matchById = (req, res, next, id)=> {
+    Match.findById(id)
+        .exec((err, match)=>{
+            if(err|| !match){
+                return res.status(400).json({
+                    error: "game not found"
+                });
+            }
+            req.match = match;
+            next();
+        });
+};
+
+
 exports.sendInvite = (req, res) => {
     const {sender_id, receiver_id, game_id} = req.body;
 
@@ -162,5 +179,71 @@ exports.disputes = (req, res) => {
             return res.json(err);
         }
         return res.json(match);
+    })
+};
+
+exports.uploadProof = (req, res)=>{
+
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+    form.parse(req, async (err, fields, files) => {
+        if (err) {
+            return res.status(400).json({
+                error: "Photo cannot be uploaded"
+            });
+        }
+
+        const {winner_id, loser_id} = fields;
+        console.log(winner_id);
+
+        User.findById(winner_id,(err, winner)=> {
+            if(err||!winner){
+                return res.json({
+                    error: "Winner id is invalid"
+                });
+            }
+            else{
+                User.findById(loser_id, (err, loser)=> {
+                    if(err||!loser){
+                        return res.json({
+                            error: "loser id is invalid"
+                        });
+                    }
+                    else {
+
+
+                        let match = req.match;
+                        match.winner_id = winner;
+                        match.loser_id = loser
+
+                        //uploading proof
+                        if (files.photo) {
+                            var oldpath = files.photo.path;
+                            console.log(oldpath);
+                            var temp = '\\images\\' + Math.random()+files.photo.name ;
+                            console.log(temp);
+
+                            var newpath = 'C:\\Users\\unique\\WebstormProjects\\gaminatic\\assets' + temp;
+                            //console.log('path: '+ newpath);
+                            fs.rename(oldpath, newpath, function (err) {
+                                if (err) throw err;
+
+                            });
+                            match.dispute_proof = temp
+                        }
+                        match.save((err, result) => {
+                            if (err) {
+                                return res.status(400).json({
+                                    error: err
+                                })
+                            }
+                            res.json(result);
+
+                        });
+
+                    }
+                })
+            }
+        })
     })
 }
