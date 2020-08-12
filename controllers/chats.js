@@ -5,7 +5,7 @@ const Message = require("../models/message");
 exports.chatById = (req, res, next, id)=> {
     Chat.findById(id)
         .exec((err, chat)=>{
-            if(err|| !user){
+            if(err|| !chat){
                 return res.status(400).json({
                     error: "Chat not found"
                 });
@@ -24,4 +24,17 @@ exports.getUserChats = (req, res)=> {
             return res.json (chat)
         }
     }).populate('user1', 'name').populate('user2', 'name')
+}
+
+exports.getMessages = (req, res)=> {
+
+    Message.find({chat_id : req.chat }, (err, chat)=> {
+        if(err){
+            return res.json ({error: "error finding messages"})
+        }
+        else {
+            return res.json (chat)
+        }
+    }).populate('receiver_id', 'name')
+
 }
