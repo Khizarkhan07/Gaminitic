@@ -16,6 +16,9 @@ const messageSchema = new Schema({
     },
     message: {
         type: String
+    },
+    attachment : {
+        type: String
     }
 });
 

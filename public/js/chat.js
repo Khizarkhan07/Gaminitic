@@ -16,6 +16,26 @@ var messages = document.getElementById("messages");
     return false;
   });
 
+  $('#uploadfile').bind('change', function(e){
+    var data = e.originalEvent.target.files[0];
+    console.log(data)
+    readThenSendFile(data);
+  });
+
+  function readThenSendFile(data){
+
+    var reader = new FileReader();
+    reader.onload = function(evt){
+      var msg ={};
+      msg.size = data.size;
+      msg.file = evt.target.result;
+      msg.fileName = data.name;
+      socket.emit('base64 file', msg);
+    };
+    reader.readAsDataURL(data);
+  }
+
+
   socket.on("received", data => {
     let li = document.createElement("li");
     let span = document.createElement("span");
@@ -25,6 +45,17 @@ var messages = document.getElementById("messages");
     console.log("Hello bingo!");
   });
 })();
+
+socket.on("image", function(image, buffer) {
+  if(image)
+  {
+    console.log(" image: from client side");
+    // code to handle buffer like drawing with canvas** <--- is canvas drawing/library a requirement?  is there an alternative? another quick and dirty solution?
+    console.log(image);
+    // what can we do here to serve the image onto an img tag?
+  }
+
+});
 
 // fetching initial chat messages from the database
 (function() {
@@ -58,6 +89,8 @@ socket.on("notifyTyping", data => {
   typing.innerText = data.user + " " + data.message;
   console.log(data.user + data.message);
 });
+
+
 
 //stop typing
 messageInput.addEventListener("keyup", () => {
