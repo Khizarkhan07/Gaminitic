@@ -26,6 +26,7 @@ const chatRoutes = require("./routes/chat");
 const Chat = require("./models/chat");
 const Message = require("./models/message");
 const User = require("./models/user");
+const Group = require("./models/group");
 
 
 
@@ -218,6 +219,47 @@ socket.on("connection", socket => {
             }).select("name, email _id")
 
     });
+
+    socket.on("group creation", function (data) {
+        const creator_id= "5f2a789993af8927bc4a38f0";
+        const participant1_id= "5f2bdf1542983921e098a148";
+        const participant2_id= "5f2d339c38916545b4cd0999";
+        User.findById(creator_id , (err, creator)=> {
+            if(err || !creator) {
+                return res.json({error: "Creator not found"})
+            }
+            else {
+                User.findById(participant1_id , (err, participant1)=> {
+                    if(err || !creator) {
+                        return res.json({error: "Participant1 not found"})
+                    }
+                    else {
+                        User.findById(participant2_id , (err, participant2)=> {
+                            if(err || !creator) {
+                                return res.json({error: "Participant2 not found"})
+                            }
+                            else {
+                                let group = new Group();
+                                group.creator = creator;
+                                group.participants.push(participant1, participant2);
+                                group.name = "test group"
+                                group.save((err, group)=> {
+                                    if(err){
+                                        console.log("group not created");
+                                    }
+                                    else {
+                                        //socket.to('test group').emit('group creation' , {message: "you are added to a group"} );
+                                        console.log("group created")
+                                    }
+                                })
+                            }
+                        }).select("name email _id")
+                    }
+                }).select("name email _id")
+
+            }
+        }).select("name email _id")
+    })
 });
 
 

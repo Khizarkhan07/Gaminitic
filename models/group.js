@@ -2,12 +2,18 @@ const moongose = require("mongoose");
 const Schema = moongose.Schema;
 
 const groupSchema = new Schema({
-
+    name : {
+        type: String
+    },
     chat_type: {
         type:String,
         default : "group"
     },
-    participants: [{type: mongoose.Schema.ObjectId , ref: "user"}]
+    creator : {
+        type: moongose.Schema.ObjectId ,
+        ref: "user"
+    },
+    participants: [{type: moongose.Schema.ObjectId , ref: "user"}]
 
 
 });

@@ -38,3 +38,31 @@ exports.getMessages = (req, res)=> {
     }).populate('receiver_id', 'name')
 
 }
+
+exports.createGroup = (req, res)=> {
+    const {creator_id , participant1_id ,participant2_id} = req.body;
+
+    User.findById(creator_id , (err, creator)=> {
+        if(err || !creator) {
+            return res.json({error: "Creator not found"})
+        }
+        else {
+            User.findById(participant1_id , (err, participant1)=> {
+                if(err || !creator) {
+                    return res.json({error: "Participant1 not found"})
+                }
+                else {
+                    User.findById(participant2_id , (err, participant2)=> {
+                        if(err || !creator) {
+                            return res.json({error: "Participant2 not found"})
+                        }
+                        else {
+
+                        }
+                    }).select("name email _id")
+                }
+            }).select("name email _id")
+
+        }
+    }).select("name email _id")
+}
