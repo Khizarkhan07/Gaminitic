@@ -27,6 +27,7 @@ const Chat = require("./models/chat");
 const Message = require("./models/message");
 const User = require("./models/user");
 const Group = require("./models/group");
+const GroupMessage = require("./models/groupMessage");
 
 
 
@@ -259,6 +260,37 @@ socket.on("connection", socket => {
 
             }
         }).select("name email _id")
+    })
+
+    socket.on("group message" ,function (data) {
+        const group_id = "5f35247b87f276241c7304bc";
+        const sender_id= "5f2bdf1542983921e098a148";
+        Group.findById(group_id, (err, group)=> {
+            if(err||!group){
+                console.log("group not found")
+            }
+            else {
+                User.findById(sender_id, (err, user)=> {
+                    if(err||!user){
+                        console.log("user doesnot exist")
+                    }
+                    else {
+                        let message = new GroupMessage();
+                        message.group_id = group;
+                        message.sender_id= user;
+                        message.message = "test"
+                        message.save((err, message)=> {
+                            if(err){
+                                console.log("error creating message")
+                            }
+                            else {
+                                socket.to(group.name).emit('group message', {message: "message from group"});
+                            }
+                        })
+                    }
+                })
+            }
+        })
     })
 });
 
