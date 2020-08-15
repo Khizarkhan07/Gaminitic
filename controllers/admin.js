@@ -140,6 +140,50 @@ exports.changeStatus = (req, res)=> {
                 }
 
             }
-        })
+        }).select("name _id email")
+    })
+}
+
+exports.resloveDispute = (req, res) => {
+    const {winner_id, loser_id, match_id} = req.body;
+
+    Match.findById(match_id, (err, match)=> {
+        if(err||!match){
+            return res.json ({error: "Match not found"});
+        }
+        else {
+            User.findById(winner_id, (err, winner)=> {
+                if(err){
+                    return res.json ({error: "Winner not found"})
+                }
+                else {
+                    User.findById(loser_id, (err, loser)=> {
+                        if(err){
+                            return res.json ({error: "loser not found"})
+                        }
+                        else {
+                            if(match.under_review_by._id = req.auth._id){
+                                match.winner_id = winner;
+                                match.loser_id= loser;
+                                match.status= "closed"
+                                match.is_dispute = false;
+                                match.save((err, match)=> {
+                                    if(err){
+                                        return res.json ({error: "Error closing the match"})
+                                    }
+                                    else {
+                                        return res.json (match)
+                                    }
+                                })
+                            }
+                            else {
+                                return res.json ({error: "Another admin is resloving the dispute"})
+                            }
+
+                        }
+                    }).select("name email _id")
+                }
+            }).select("name email _id")
+        }
     })
 }
