@@ -45,6 +45,10 @@ const matches = new moongose.Schema({
     declared_winner_id: {
         type: moongose.Schema.ObjectId,
         ref: "user"
+    },
+    under_review_by : {
+        type: moongose.Schema.ObjectId,
+        ref: "user"
     }
 
 });

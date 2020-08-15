@@ -1,5 +1,6 @@
 const _ = require("lodash");
 const  User = require("../models/user");
+const  Match = require("../models/match");
 
 exports.allusers = (req, res)=> {
     User.find((err,users)=>{
@@ -92,6 +93,53 @@ exports.assignRole = (req, res) => {
                 return res.json(err)
             }
             return res.json({user, message: "Role assigned"})
+        })
+    })
+}
+
+exports.changeStatus = (req, res)=> {
+    Match.findById(req.body.matchId, (err, match)=> {
+        if(err||!match){
+            return res.json ({error: "Match not found"})
+        }
+        User.findById(req.body.userId, (err, user)=> {
+            if(err||!user){
+                return res.json ({error: "User not found"})
+            }
+            else {
+                if(!match.under_review_by){
+                    match.under_review_by = user;
+                    match.status= req.body.status;
+
+                    match.save((err, match)=> {
+                        if(err){
+                            return res.json ({error: "Error marking under review"})
+                        }
+                        else {
+                            return res.json (match)
+                        }
+                    })
+                }
+                else {
+
+                    if(match.under_review_by=user){
+                        match.status= req.body.status;
+
+                        match.save((err, match)=> {
+                            if(err){
+                                return res.json ({error: "Error marking under review"})
+                            }
+                            else {
+                                return res.json (match)
+                            }
+                        })
+                    }
+                    else {
+                        return res.json ({error: "This dispute is under review by another admin"})
+                    }
+                }
+
+            }
         })
     })
 }
