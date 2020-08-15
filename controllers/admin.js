@@ -187,3 +187,13 @@ exports.resloveDispute = (req, res) => {
         }
     })
 }
+
+exports.disputes= (req, res)=> {
+    Match.find({is_dispute : true} , (err, match)=> {
+        if(err){
+            return res.json ({error: "Error finding dispute"})
+        }
+        return res.json (match)
+
+    })
+}

@@ -8,6 +8,7 @@ const {matchById} = require("../controllers/invite");
 
 router.get("/users", requireSignin, hasbothPermission ,allusers)
 router.put("/assign_role", requireSignin, hasPermission , assignRole)
+router.get("/disputes", requireSignin, hasPermission)
 router.put("/change_status/", requireSignin, hasPermission, changeStatus)
 router.put("/resolve_dispute/", requireSignin, hasPermission, resloveDispute)
 
