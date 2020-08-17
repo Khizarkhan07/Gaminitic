@@ -1,0 +1,68 @@
+<div>
+    <div class="container">
+    <h4> {{dispute.game.name}} </h4>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <h5 class="card-title"> <i class="fa fa-user"></i> Details</h5>
+                <hr/>
+                <div style="padding: 20px" class={"card-body"}>
+                    <div class={"row"}>
+                        <div class={"col-md-6"}>
+                            <p class={"m-0"}><b>Game</b></p>
+                            <p>{{dispute.game_id.name}}</p>
+
+                            <p class={"m-0"}><b>Disputed User</b></p>
+                            <p>{{dispute.dispute_user_id.name}}</p>
+
+                            <p class={"m-0"}><b>User 1</b></p>
+                            <p>{{dispute.user1_id.name}}</p>
+
+                            <p class={"m-0"}><b>User 2</b></p>
+                            <p>{{dispute.user2_id.name}}</p>
+
+                            <p class={"m-0"}><b>Match Time</b></p>
+                            <p>{{dispute.match_time}}</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class={"col-md-4"}>
+            <div class={"card"}>
+                <h5 class={"card-title"}> <i class="fa fa-cog"></i> Actions</h5>
+                <hr/>
+                <div class={"card-body"}>
+                    <p>Report Status: <b> {{dispute.status}}</b></p>
+                </div>
+
+                <div style="margin-top: 50px">
+                    <h6>Resolve dispute</h6>
+                    <hr>
+                </div>
+
+                <form action="http://localhost:8080/resolve_dispute/" method="POST" >
+
+                    <label for="sel1">Winner:</label>
+                    <select class="form-control" name="winner_id" required>
+
+                        <option value="{{dispute.user1_id._id}}">{{dispute.user1_id.name}}</option>
+                        <option value="{{dispute.user2_id._id}}">{{dispute.user2_id.name}}</option>
+                    </select>
+                    <label for="sel1">Loser:</label>
+                    <select class="form-control" name="loser_id">
+                        <option value="{{dispute.user1_id._id}}" >{{dispute.user1_id.name}}</option>
+                        <option value="{{dispute.user1_id._id}}">{{dispute.user2_id.name}}</option>
+                    </select>
+
+                    <input type="hidden" value="{{dispute._id}}" name="match_id"/>
+                    <button style="margin-top: 10px" class="btn btn-danger" type="submit">
+                        Resolve
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const  User = require("../models/user");
 const  Match = require("../models/match");
-
+const formidable = require('formidable')
 exports.allusers = (req, res)=> {
     User.find((err,users)=>{
         if(err){
@@ -145,47 +145,54 @@ exports.changeStatus = (req, res)=> {
 }
 
 exports.resloveDispute = (req, res) => {
-    const {winner_id, loser_id, match_id} = req.body;
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
 
-    Match.findById(match_id, (err, match)=> {
-        if(err||!match){
-            return res.json ({error: "Match not found"});
-        }
-        else {
-            User.findById(winner_id, (err, winner)=> {
-                if(err){
-                    return res.json ({error: "Winner not found"})
-                }
-                else {
-                    User.findById(loser_id, (err, loser)=> {
-                        if(err){
-                            return res.json ({error: "loser not found"})
-                        }
-                        else {
-                            if(match.under_review_by._id = req.auth._id){
-                                match.winner_id = winner;
-                                match.loser_id= loser;
-                                match.status= "closed"
-                                match.is_dispute = false;
-                                match.save((err, match)=> {
-                                    if(err){
-                                        return res.json ({error: "Error closing the match"})
-                                    }
-                                    else {
-                                        return res.json (match)
-                                    }
-                                })
+    form.parse(req, (err, fields)=> {
+        const {winner_id, loser_id, match_id} = fields;
+
+        Match.findById(match_id, (err, match)=> {
+            if(err||!match){
+                return res.json ({error: "Match not found"});
+            }
+            else {
+                User.findById(winner_id, (err, winner)=> {
+                    if(err){
+                        return res.json ({error: "Winner not found"})
+                    }
+                    else {
+                        User.findById(loser_id, (err, loser)=> {
+                            if(err){
+                                return res.json ({error: "loser not found"})
                             }
                             else {
-                                return res.json ({error: "Another admin is resloving the dispute"})
-                            }
+                                /*if(match.under_review_by._id = req.auth._id){*/
+                                    match.winner_id = winner;
+                                    match.loser_id= loser;
+                                    match.status= "closed"
+                                    match.is_dispute = false;
+                                    match.save((err, match)=> {
+                                        if(err){
+                                            return res.json ({error: "Error closing the match"})
+                                        }
+                                        else {
+                                            return res.json (match)
+                                        }
+                                    })
+                                /*}*/
 
-                        }
-                    }).select("name email _id")
-                }
-            }).select("name email _id")
-        }
+
+                            }
+                        }).select("name email _id")
+                    }
+                }).select("name email _id")
+            }
+        })
     })
+
+
+
+
 }
 
 exports.disputes= (req, res)=> {
@@ -202,5 +209,5 @@ exports.disputes= (req, res)=> {
 }
 
 exports.getDispute = (req, res)=> {
-    return res.json(req.match);
+    res.render('singleDispute',{dispute:req.match})
 }

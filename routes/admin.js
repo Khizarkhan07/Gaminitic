@@ -17,7 +17,7 @@ router.get("/disputes",  disputes)
 router.get("/disputes/:matchId",  getDispute)
 
 router.put("/change_status/", requireSignin, hasPermission, changeStatus)
-router.put("/resolve_dispute/", requireSignin, hasPermission, resloveDispute)
+router.post("/resolve_dispute/",  resloveDispute)
 
 router.param("matchId", matchById);
 module.exports = router;

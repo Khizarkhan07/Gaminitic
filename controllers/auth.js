@@ -112,7 +112,10 @@ exports.verifyLink = (req, res) => {
 
 
 exports.signin =  (req, res) => {
-    req.body.email= req.body.email.toLowerCase();
+    if(req.body.email){
+        req.body.email= req.body.email.toLowerCase();
+    }
+    console.log(req.body.email)
     const {email , password} = req.body;
 
     User.findOne({email}, (err, user)=>{
