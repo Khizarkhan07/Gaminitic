@@ -8,7 +8,12 @@ const formidable = require('formidable')
 const fs = require("fs");
 
 exports.matchById = (req, res, next, id)=> {
-    Match.findById(id)
+    Match.findById(id).lean()
+        .populate("user1_id", "name")
+        .populate("user2_id", "name")
+        .populate("game_id", "name")
+        .populate("dispute_user_id", "name")
+        .populate("under_review_by", "name")
         .exec((err, match)=>{
             if(err|| !match){
                 return res.status(400).json({

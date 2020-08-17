@@ -60,7 +60,7 @@ verifyAccount = (req, res) => {
         const emailData = {
             from: "no-reply@btsp.com",
             to: email,
-            subject: "Verify Car Gaminatic Account Instruction",
+            subject: "Verify Gaminatic Account Instruction",
             text: `Please click the following link to verify your account: ${
                 process.env.CLIENT_URL
             }/verify-account/${token}`,

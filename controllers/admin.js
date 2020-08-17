@@ -189,11 +189,18 @@ exports.resloveDispute = (req, res) => {
 }
 
 exports.disputes= (req, res)=> {
-    Match.find({is_dispute : true} , (err, match)=> {
-        if(err){
-            return res.json ({error: "Error finding dispute"})
-        }
-        return res.json (match)
 
-    })
+    Match.find({is_dispute: true}).lean()
+        .populate("dispute_user_id", 'name')
+        .populate("user1_id", "name")
+        .populate("user2_id", "name")
+        .populate("game_id", "name")
+        .populate("under_review_by", "name")
+        .exec((err, match)=> {
+             res.render('disputes', {match})
+        })
+}
+
+exports.getDispute = (req, res)=> {
+    return res.json(req.match);
 }
