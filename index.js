@@ -1,4 +1,5 @@
 const  express = require("express");
+const exphbs = require('express-handlebars');
 const app = express();
 const mongoose = require("mongoose");
 const cookieparser = require("cookie-parser");
@@ -8,6 +9,14 @@ const bodyparser = require("body-parser");
 const http = require("http").Server(app);
 const io = require("socket.io");
 var fs = require('fs'); // required for file serving
+
+app.engine('hbs', exphbs({
+    defaultLayout: 'main',
+    extname: '.hbs',
+    partialsDir: __dirname + '/views/paritials/'
+}));
+
+app.set('view engine', 'hbs');
 
 const port = 8080;
 
@@ -34,6 +43,8 @@ const GroupMessage = require("./models/groupMessage");
 app.use(bodyparser.json());
 app.use(cookieparser());
 app.use(cors());
+
+
 
 app.use('/', authRoutes);
 app.use('/', userRoutes);

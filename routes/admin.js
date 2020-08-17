@@ -6,6 +6,10 @@ const {} = require("../controllers/user");
 const {requireSignin} = require("../controllers/auth");
 const {matchById} = require("../controllers/invite");
 
+router.get("/login", ((req, res) =>{
+    res.render('login')
+} ))
+
 router.get("/users", requireSignin, hasbothPermission ,allusers)
 router.put("/assign_role", requireSignin, hasPermission , assignRole)
 router.get("/disputes", requireSignin, hasPermission)
