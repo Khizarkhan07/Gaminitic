@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config()
 var LocalStorage = require('node-localstorage').LocalStorage;
 localStorage = new LocalStorage('./scratch')
-
+const {sendEmail} = require('../helpers/index')
 
 exports.adminSignin =  (req, res) => {
     console.log("here")
@@ -388,3 +388,64 @@ exports.getDispute = (req, res)=> {
 exports.getUser = (req, res)=> {
     res.render('singleUser',{user:req.profile})
 }
+
+
+exports.forgotPassword = (req, res) => {
+
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+
+    form.parse(req, (err, fields)=> {
+        const {email} = fields;
+
+
+        if (!fields) return res.render('forgotPassword',{ error: "No email" });
+        if (!email)
+            return res.render('forgotPassword',{ error: "No Email in request body" });
+
+        console.log("forgot password finding user with that email");
+
+        console.log("signin req.body", email);
+        // find the user based on email
+        User.findOne({ email }, (err, user) => {
+            // if err or no user
+            if (err || !user)
+                return res.render('forgotPassword',{
+                    error: "User with that email does not exist!"
+                });
+
+            // generate a token with user id and secret
+            const token = jwt.sign(
+                { _id: user._id, iss: "NODEAPI" },
+                process.env.JWT_SECRET
+            );
+
+            // email data
+            const emailData = {
+                from: "no-reply@btsp.com",
+                to: email,
+                subject: "Password Reset Instructions",
+                text: `Please use the following link to reset your password: ${
+                    process.env.CLIENT_URL
+                }/reset-password/${token}`,
+                html: `<p>Please use the following link to reset your password:</p> <p>${
+                    process.env.CLIENT_URL
+                }/reset-password/${token}</p>`
+            };
+
+            return user.updateOne({ resetPasswordLink: token }, (err, success) => {
+                if (err) {
+                    return res.json({ message: err });
+                } else {
+                    sendEmail(emailData);
+                    return res.render('forgotPassword',{
+                        message: `Email has been sent to ${email}. Follow the instructions to reset your password.`
+                    });
+                }
+            });
+        });
+
+    })
+
+
+};

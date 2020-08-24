@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const {adminSignin, allusers, hasbothPermission ,hasPermission, assignRole, changeStatus, resloveDispute, disputes, getDispute, isSignedin, getUser} = require("../controllers/admin");
-const {} = require("../controllers/user");
+const {adminSignin, allusers, hasbothPermission ,hasPermission, assignRole, changeStatus, resloveDispute, disputes, getDispute, isSignedin, getUser ,forgotPassword} = require("../controllers/admin");
 const {requireSignin} = require("../controllers/auth");
 const {matchById} = require("../controllers/invite");
 const {userById} = require("../controllers/user");
@@ -25,6 +24,8 @@ router.get("/disputes/:matchId", hasPermission , getDispute)
 
 router.post("/change_status/",  hasPermission, changeStatus)
 router.post("/resolve_dispute/", hasPermission ,resloveDispute)
+
+router.post("/admin_forgot_password", forgotPassword);
 
 router.param("matchId", matchById);
 router.param("userId", userById);
