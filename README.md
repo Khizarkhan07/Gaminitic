@@ -43,3 +43,16 @@ $ go to mongo atlas website
 # login with google
 # Credentials: Email (gaminiticdev@gmail.com) password (Thehexaa123)
 ```
+### .env setup
+
+``` bash
+$ create a .env file in root folder
+# cpoy the env.example file data in it
+```
+
+### Admin Panel
+
+``` bash
+$ go to localhost:8080/login
+# Credentials: Email (superadmin@thehexaa.com) password (Thehexxa123)
+```
