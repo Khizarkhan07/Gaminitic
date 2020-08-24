@@ -21,14 +21,10 @@ exports.adminSignin =  (req, res) => {
 
         User.findOne({email, role: 'superadmin'}, (err, user) => {
             if (err || !user) {
-                return res.json({
-                    error: "User with this email doesnot exist!"
-                })
+                return res.render('login',{error:"User deosnot exist"})
             }
             if (!user.authenticate(password)) {
-                return res.json({
-                    error: "Email and password doesnot match!"
-                })
+                return res.render('login', {error: "email and password donot match"})
             }
 
             const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
@@ -109,14 +105,14 @@ exports.hasbothPermission = (req, res, next)=>{
     const role = localStorage.getItem("role")
 
     if(!_id){
-        return res.status(403).json({
+        return res.render('login',{
             error: "You are not athorized to perform this action!"
         })
     }
     else {
         User.findOne({_id:_id}, (err, user)=> {
             if(err || !user){
-                return res.status(403).json({
+                return res.render('login',{
                     error: "You are not athorized to perform this action!"
                 })
             }
@@ -125,7 +121,7 @@ exports.hasbothPermission = (req, res, next)=>{
                     hasPermission = true;
                 }
                 if(!hasPermission){
-                    return res.status(403).json ({
+                    return res.json({
                         error : "only admin and super admins has this permission"
                     });
                 }
