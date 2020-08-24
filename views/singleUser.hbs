@@ -5,6 +5,13 @@
             <div class="alert alert-success" role="alert">
                 {{message}}
             </div>
+
+        {{/if}}
+
+        {{#if error}}
+            <div class="alert alert-danger" role="alert">
+                {{error}}
+            </div>
         {{/if}}
         <div style="margin-top: 20px" class="row">
             <div class="col-md-8">

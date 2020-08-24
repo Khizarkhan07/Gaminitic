@@ -236,7 +236,7 @@ exports.assignRole = (req, res) => {
 
         User.findOne({_id:user_id}, (err, user)=> {
             if(err|| !user){
-                return res.json("invalid user id")
+                return res.render('singleUser',{error:"invalid user id"})
             }
             updatedFiled = {
                 role : role.toLowerCase()
@@ -246,7 +246,7 @@ exports.assignRole = (req, res) => {
                 if(err || !user){
                     return res.json(err)
                 }
-                return res.json({user, message: "Role assigned"})
+                return res.render('singleUser',{user:user, message: "Role assigned"})
             })
         })
     })
