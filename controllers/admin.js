@@ -2,6 +2,61 @@ const _ = require("lodash");
 const  User = require("../models/user");
 const  Match = require("../models/match");
 const formidable = require('formidable')
+const jwt = require("jsonwebtoken");
+require('dotenv').config()
+var LocalStorage = require('node-localstorage').LocalStorage;
+localStorage = new LocalStorage('./scratch')
+
+
+exports.adminSignin =  (req, res) => {
+    console.log("here")
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+
+    form.parse(req, (err, fields)=> {
+        const {password} = fields;
+        const email = fields.email.toLowerCase();
+        console.log(email)
+        console.log(password)
+
+        User.findOne({email, role: 'superadmin'}, (err, user) => {
+            if (err || !user) {
+                return res.json({
+                    error: "User with this email doesnot exist!"
+                })
+            }
+            if (!user.authenticate(password)) {
+                return res.json({
+                    error: "Email and password doesnot match!"
+                })
+            }
+
+            const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
+
+            res.cookie("t", token, {expire: Date.now() + 999});
+
+            const {_id, name, email, role} = user;
+
+            localStorage.setItem('jwt', token)
+            localStorage.setItem('_id', _id)
+            localStorage.setItem('name', name)
+            localStorage.setItem('email', email)
+            localStorage.setItem('role', role)
+
+            Match.find({is_dispute: true}).lean()
+                .populate("dispute_user_id", 'name')
+                .populate("user1_id", "name")
+                .populate("user2_id", "name")
+                .populate("game_id", "name")
+                .populate("under_review_by", "name")
+                .exec((err, match)=> {
+                    res.render('disputes', {match})
+                })
+        });
+    })
+}
+
+
 exports.allusers = (req, res)=> {
     User.find((err,users)=>{
         if(err){
@@ -14,6 +69,7 @@ exports.allusers = (req, res)=> {
 };
 
 
+/*
 exports.hasbothPermission = (req, res, next)=>{
     console.log(req.auth)
     var hasPermission = false;
@@ -45,8 +101,53 @@ exports.hasbothPermission = (req, res, next)=>{
     }
 
 };
+*/
+
+exports.hasbothPermission = (req, res, next)=>{
+    var hasPermission = false;
+
+    const _id = localStorage.getItem("_id")
+    console.log(localStorage.getItem("_id"))
 
 
+    const jwt = localStorage.getItem("jwt")
+    console.log(localStorage.getItem("jwt"))
+
+
+    const role = localStorage.getItem("role")
+    console.log(localStorage.getItem("role"))
+
+
+    if(!_id){
+        return res.status(403).json({
+            error: "You are not athorized to perform this action!"
+        })
+    }
+    else {
+        User.findOne({_id:_id}, (err, user)=> {
+            if(err || !user){
+                return res.status(403).json({
+                    error: "You are not athorized to perform this action!"
+                })
+            }
+            else {
+                if (user.role == "superadmin" || user.role == "admin"){
+                    hasPermission = true;
+                }
+                if(!hasPermission){
+                    return res.status(403).json ({
+                        error : "only admin and super admins has this permission"
+                    });
+                }
+                next();
+            }
+        })
+    }
+
+};
+
+
+/*
 exports.hasPermission = (req, res, next)=>{
     console.log(req.auth)
     var hasPermission = false;
@@ -78,6 +179,67 @@ exports.hasPermission = (req, res, next)=>{
     }
 
 };
+*/
+
+exports.isSignedin =(req, res, next)=> {
+    const _id = localStorage.getItem("_id")
+    console.log(localStorage.getItem("_id"))
+
+
+    const jwt = localStorage.getItem("jwt")
+    console.log(localStorage.getItem("jwt"))
+
+
+    const role = localStorage.getItem("role")
+    console.log(localStorage.getItem("role"))
+
+    if(!jwt){
+        return res.render('login')
+    }
+    next();
+}
+
+
+exports.hasPermission = (req, res, next)=>{
+    const _id = localStorage.getItem("_id")
+    console.log(localStorage.getItem("_id"))
+
+
+    const jwt = localStorage.getItem("jwt")
+    console.log(localStorage.getItem("jwt"))
+
+
+    const role = localStorage.getItem("role")
+    console.log(localStorage.getItem("role"))
+
+    var hasPermission = false;
+
+    if(!_id){
+        return res.status(403).json({
+            error: "You are not athorized to perform this action!"
+        })
+    }
+    else {
+        User.findOne({_id: _id}, (err, user)=> {
+            if(err || !user){
+                return res.render('login', {error: "login to perform the action"})
+            }
+            else {
+                if (user.role == "superadmin"){
+                    hasPermission = true;
+                }
+                if(!hasPermission){
+                    if(err || !user){
+                        return res.render('login', {error: "login as superadmin"})
+                    }
+                }
+                next();
+            }
+        })
+    }
+
+};
+
 
 exports.assignRole = (req, res) => {
     User.findOne({_id:req.body.id}, (err, user)=> {
@@ -166,7 +328,7 @@ exports.resloveDispute = (req, res) => {
                                 return res.json ({error: "loser not found"})
                             }
                             else {
-                                /*if(match.under_review_by._id = req.auth._id){*/
+                                if(match.under_review_by._id = localStorage.getItem('_id')){
                                     match.winner_id = winner;
                                     match.loser_id= loser;
                                     match.status= "closed"
@@ -179,7 +341,10 @@ exports.resloveDispute = (req, res) => {
                                             return res.json (match)
                                         }
                                     })
-                                /*}*/
+                                }
+                                else {
+                                    return res.json ({error: "Underreview by another admin"})
+                                }
 
 
                             }
