@@ -14,8 +14,8 @@ router.get("/login", ((req, res) =>{
 router.post("/admin_signin" , adminSignin);
 
 router.get("/users",  hasbothPermission ,allusers)
-router.get("/user/:userId",  hasbothPermission ,getUser)
-router.put("/assign_role", requireSignin, hasPermission , assignRole)
+router.get("/get_user/:userId",  hasbothPermission ,getUser)
+router.post("/assign_role",  hasPermission , assignRole)
 
 router.get("/disputes",  disputes)
 router.get("/disputes/:matchId", hasPermission , getDispute)

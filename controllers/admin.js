@@ -232,21 +232,29 @@ exports.hasPermission = (req, res, next)=>{
 
 
 exports.assignRole = (req, res) => {
-    User.findOne({_id:req.body.id}, (err, user)=> {
-        if(err|| !user){
-            return res.json("invalid user id")
-        }
-        updatedFiled = {
-            role : req.body.role.toLowerCase()
-        }
-        user = _.extend(user, updatedFiled);
-        user.save((err, user)=> {
-            if(err || !user){
-                return res.json(err)
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+
+    form.parse(req, (err, fields)=> {
+        const {user_id, role} = fields;
+
+        User.findOne({_id:user_id}, (err, user)=> {
+            if(err|| !user){
+                return res.json("invalid user id")
             }
-            return res.json({user, message: "Role assigned"})
+            updatedFiled = {
+                role : role.toLowerCase()
+            }
+            user = _.extend(user, updatedFiled);
+            user.save((err, user)=> {
+                if(err || !user){
+                    return res.json(err)
+                }
+                return res.json({user, message: "Role assigned"})
+            })
         })
     })
+
 }
 
 exports.changeStatus = (req, res)=> {
