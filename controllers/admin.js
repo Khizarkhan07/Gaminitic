@@ -258,32 +258,27 @@ exports.assignRole = (req, res) => {
 }
 
 exports.changeStatus = (req, res)=> {
-    Match.findById(req.body.matchId, (err, match)=> {
-        if(err||!match){
-            return res.json ({error: "Match not found"})
-        }
-        User.findById(req.body.userId, (err, user)=> {
-            if(err||!user){
-                return res.json ({error: "User not found"})
-            }
-            else {
-                if(!match.under_review_by){
-                    match.under_review_by = user;
-                    match.status= req.body.status;
 
-                    match.save((err, match)=> {
-                        if(err){
-                            return res.json ({error: "Error marking under review"})
-                        }
-                        else {
-                            return res.json (match)
-                        }
-                    })
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+
+    form.parse(req, (err, fields)=> {
+        const {matchId, status} = fields;
+
+        const userId = localStorage.getItem('_id');
+
+        Match.findById(matchId, (err, match)=> {
+            if(err||!match){
+                return res.json ({error: "Match not found"})
+            }
+            User.findById(userId, (err, user)=> {
+                if(err||!user){
+                    return res.json ({error: "User not found"})
                 }
                 else {
-
-                    if(match.under_review_by=user){
-                        match.status= req.body.status;
+                    if(!match.under_review_by){
+                        match.under_review_by = user;
+                        match.status= status;
 
                         match.save((err, match)=> {
                             if(err){
@@ -295,13 +290,32 @@ exports.changeStatus = (req, res)=> {
                         })
                     }
                     else {
-                        return res.json ({error: "This dispute is under review by another admin"})
-                    }
-                }
 
-            }
-        }).select("name _id email")
+                        if(match.under_review_by == user){
+                            console.log("same user")
+                            match.status= status;
+
+                            match.save((err, match)=> {
+                                if(err){
+                                    return res.json ({error: "Error marking under review"})
+                                }
+                                else {
+                                    return res.json (match)
+                                }
+                            })
+                        }
+                        else {
+                            return res.json ({error: "This dispute is under review by another admin"})
+                        }
+                    }
+
+                }
+            }).select("name _id email")
+        })
+
     })
+
+
 }
 
 exports.resloveDispute = (req, res) => {

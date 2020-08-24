@@ -37,6 +37,28 @@
                     <p>Report Status: <b> {{dispute.status}}</b></p>
                 </div>
 
+
+                <div style="margin-top: 50px">
+                    <h6>Change Status</h6>
+                    <hr>
+                </div>
+
+                <form action="http://localhost:8080/change_status/" method="POST" >
+
+                    <label for="sel1">Status:</label>
+                    <select class="form-control" name="status" required>
+
+                        <option value="underreview">Under Review</option>
+                        <option value="open">Open</option>
+
+                    </select>
+                    <input type="hidden" value="{{dispute._id}}" name="matchId"/>
+                    <button style="margin-top: 10px" class="btn btn-danger" type="submit">
+                        Submit
+                    </button>
+                </form>
+            </div>
+
                 <div style="margin-top: 50px">
                     <h6>Resolve dispute</h6>
                     <hr>
