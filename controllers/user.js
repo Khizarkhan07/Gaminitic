@@ -5,7 +5,7 @@ const fs = require("fs");
 const formidable = require("formidable");
 
 exports.userById = (req, res, next, id)=> {
-    User.findById(id)
+    User.findById(id).lean()
         .exec((err, user)=>{
             if(err|| !user){
                 return res.status(400).json({

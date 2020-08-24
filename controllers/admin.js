@@ -366,3 +366,7 @@ exports.disputes= (req, res)=> {
 exports.getDispute = (req, res)=> {
     res.render('singleDispute',{dispute:req.match})
 }
+
+exports.getUser = (req, res)=> {
+    res.render('singleUser',{user:req.profile})
+}
