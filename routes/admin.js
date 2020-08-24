@@ -12,7 +12,7 @@ router.get("/login", ((req, res) =>{
 
 router.post("/admin_signin" , adminSignin);
 
-router.get("/users", requireSignin, hasbothPermission ,allusers)
+router.get("/users",  hasbothPermission ,allusers)
 router.put("/assign_role", requireSignin, hasPermission , assignRole)
 
 router.get("/disputes",  disputes)

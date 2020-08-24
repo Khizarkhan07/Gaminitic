@@ -58,14 +58,12 @@ exports.adminSignin =  (req, res) => {
 
 
 exports.allusers = (req, res)=> {
-    User.find((err,users)=>{
-        if(err){
-            return res.status(400).json({
-                error: err
-            })
-        }
-        res.json(users);
-    }).select("name email created updated role blocked ");
+
+    User.find().lean()
+        .select("name email created updated role blocked ")
+        .exec((err, user)=> {
+            res.render('users', {users:user});
+        })
 };
 
 
@@ -107,16 +105,8 @@ exports.hasbothPermission = (req, res, next)=>{
     var hasPermission = false;
 
     const _id = localStorage.getItem("_id")
-    console.log(localStorage.getItem("_id"))
-
-
     const jwt = localStorage.getItem("jwt")
-    console.log(localStorage.getItem("jwt"))
-
-
     const role = localStorage.getItem("role")
-    console.log(localStorage.getItem("role"))
-
 
     if(!_id){
         return res.status(403).json({
