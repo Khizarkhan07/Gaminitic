@@ -1,5 +1,6 @@
 const  express = require("express");
 const exphbs = require('express-handlebars');
+const path = require('path')
 const app = express();
 const mongoose = require("mongoose");
 const cookieparser = require("cookie-parser");
@@ -9,7 +10,9 @@ const bodyparser = require("body-parser");
 const http = require("http").Server(app);
 
 var fs = require('fs'); // required for file serving
-
+app.use(express.static('assets'));
+app.use(express.static(__dirname + "/public"));
+app.use(express.static(path.join(__dirname, '/views')))
 app.engine('hbs', exphbs({
     defaultLayout: 'main',
     extname: '.hbs',
@@ -57,9 +60,6 @@ app.use('/', chatRoutes);
 
 
 
-app.use(express.static('assets'));
-app.use(express.static(__dirname +'/views/layouts'));
-app.use(express.static(__dirname + "/public"));
 
 exports.http =http
 
