@@ -9,7 +9,7 @@ const {userById} = require("../controllers/user");
 router.get("/login", ((req, res) =>{
     res.render('login', {layout: "main1.hbs"})
 } ))
-router.get("/forgotPassword", ((req, res) =>{
+router.get("/forgot-password", ((req, res) =>{
     res.render('forgotPassword', {layout: "main1.hbs"})
 } ))
 
