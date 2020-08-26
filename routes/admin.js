@@ -16,7 +16,7 @@ router.get("/forgot-password", ((req, res) =>{
 router.post("/admin_signin" , adminSignin);
 
 router.get("/users",  hasbothPermission ,allusers)
-router.get("/get_user/:userId",  hasbothPermission ,getUser)
+router.get("/user/:userId",  hasbothPermission ,getUser)
 router.post("/assign_role",  hasPermission , assignRole)
 
 router.get("/disputes",  disputes)
