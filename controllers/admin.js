@@ -58,6 +58,7 @@ exports.allusers = (req, res)=> {
     User.find().lean()
         .select("name email created updated role blocked ")
         .exec((err, user)=> {
+            console.log("here")
             res.render('users', {users:user});
         })
 };
@@ -98,6 +99,7 @@ exports.hasbothPermission = (req, res, next)=>{
 */
 
 exports.hasbothPermission = (req, res, next)=>{
+    console.log("here")
     var hasPermission = false;
 
     const _id = localStorage.getItem("_id")
@@ -287,7 +289,7 @@ exports.changeStatus = (req, res)=> {
                     }
                     else {
 
-                        if(match.under_review_by == user){
+                        if(match.under_review_by._id == userId){
                             console.log("same user")
                             match.status= status;
 

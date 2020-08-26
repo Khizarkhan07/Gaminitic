@@ -86,6 +86,15 @@ var UserSchema = new mongoose.Schema({
         type: String,
         default: "user"
     },
+    isDST: {
+      type: Boolean
+    },
+    timeZone : {
+        type:String
+    },
+    utcOffset: {
+      type: Number
+    },
     blocked_users: [{
         type: mongoose.Schema.ObjectId,
         ref: "block_history"

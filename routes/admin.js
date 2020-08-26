@@ -15,14 +15,14 @@ router.get("/forgot-password", ((req, res) =>{
 
 router.post("/admin_signin" , adminSignin);
 
-router.get("/users",  hasbothPermission ,allusers)
+router.get("/users" ,hasbothPermission ,allusers)
 router.get("/user/:userId",  hasbothPermission ,getUser)
 router.post("/assign_role",  hasPermission , assignRole)
 
 router.get("/disputes",  disputes)
 router.get("/disputes/:matchId", hasPermission , getDispute)
 
-router.post("/change_status/",  hasPermission, changeStatus)
+router.post("/change_status/" ,hasPermission, changeStatus)
 router.post("/resolve_dispute/", hasPermission ,resloveDispute)
 
 router.post("/admin_forgot_password", forgotPassword);
