@@ -50,3 +50,43 @@
     </tr>
     </tfoot>
 </table>
+
+{{#if login}}
+    <script>
+        // Check browser support
+        if (typeof(Storage) !== "undefined") {
+            // Store
+            const token = '{{login.user.token}}';
+            const _id = '{{login.user._id}}';
+            const name = '{{login.user.name}}';
+            const email = '{{login.user.email}}';
+            const role = '{{login.user.role}}';
+            localStorage.setItem("token", token)
+            localStorage.setItem("_id", _id)
+            localStorage.setItem("name", name)
+            localStorage.setItem("email", email)
+            localStorage.setItem("role", role)
+            // Retrieve
+
+            if(localStorage.getItem("token")){
+                var a = document.createElement('a');
+                var linkText = document.createTextNode("Logout");
+                a.appendChild(linkText);
+                a.classList.add("list-group-item")
+                a.classList.add("list-group-item-action")
+                a.classList.add("bg-light")
+                a.href = "http://example.com";
+                document.getElementById('side-menu').appendChild(a);
+            }
+
+            if(localStorage.getItem("name")) {
+                // Store
+                var Username = localStorage.getItem("name")
+                // Retrieve
+                document.getElementById("name-tag").innerHTML = "Welcome " + Username;
+            }
+        }
+
+
+    </script>
+{{/if}}

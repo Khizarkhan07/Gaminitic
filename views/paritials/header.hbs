@@ -2,18 +2,12 @@
     <!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar-wrapper" style="background: black" >
         <div class="sidebar-heading">Gaminatic </div>
-        <div class="list-group list-group-flush">
+        <div id="side-menu" class="list-group list-group-flush">
+            <label id="name-tag" class="list-group-item list-group-item-action bg-light"><b></b></label>
             <a href="/users" class="list-group-item list-group-item-action bg-light">Users</a>
             <a href="/disputes" class="list-group-item list-group-item-action bg-light">Disputes</a>
-            <a href="/login" class="list-group-item list-group-item-action bg-light">Login</a>
-            <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
-            <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>
-            <a href="#" class="list-group-item list-group-item-action bg-light">Status</a>
+            <a id="login-tab" href="/login" class="list-group-item list-group-item-action bg-light">Login</a>
         </div>
-
-    <!-- /#sidebar-wrapper -->
-
-
 
 </div>
 <!-- /#wrapper -->
@@ -21,3 +15,41 @@
 <!-- Bootstrap core JavaScript -->
 
 <!-- Menu Toggle Script -->
+
+    <script>
+        // Check browser support
+        if (typeof(Storage) !== "undefined") {
+            if(localStorage.getItem("token")){
+
+                var x = document.getElementById("login-tab");
+                    x.style.display = "none";
+
+                var a = document.createElement('a');
+                var linkText = document.createTextNode("Logout");
+                a.appendChild(linkText);
+                a.classList.add("list-group-item")
+                a.classList.add("list-group-item-action")
+                a.classList.add("bg-light")
+                a.href = "http://localhost:8080/login";
+                document.getElementById('side-menu').appendChild(a);
+
+                //logout
+                a.onclick = function() {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("name");
+                    localStorage.removeItem("_id");
+                    localStorage.removeItem("email");
+                    localStorage.removeItem("role")
+                };
+            }
+
+            if(localStorage.getItem("name")) {
+                // Store
+                var name = localStorage.getItem("name")
+                // Retrieve
+                document.getElementById("name-tag").innerHTML = "Welcome " + name;
+                document.getElementById("name-tag").style.fontStyle= "oblique"
+                document.getElementById("name-tag").style.fontWeight= "500"
+            }
+        }
+    </script>

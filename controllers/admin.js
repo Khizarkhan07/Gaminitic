@@ -46,7 +46,7 @@ exports.adminSignin =  (req, res) => {
                 .populate("game_id", "name")
                 .populate("under_review_by", "name")
                 .exec((err, match)=> {
-                    res.render('disputes', {match})
+                    res.render('disputes', {match, login: {user: {_id, name , email, token, role}}})
                 })
         });
     })

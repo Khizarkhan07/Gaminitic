@@ -52,3 +52,13 @@
     </div>
 
 </div>
+
+<script>
+    // Check browser support
+    if (typeof(Storage) !== "undefined") {
+        if(localStorage.getItem("token")){
+            location.replace("http://localhost:8080/disputes")
+        }
+        // Retrieve
+    }
+</script>
