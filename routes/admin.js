@@ -7,10 +7,10 @@ const {matchById} = require("../controllers/invite");
 const {userById} = require("../controllers/user");
 
 router.get("/login", ((req, res) =>{
-    res.render('login')
+    res.render('login', {layout: "main1.hbs"})
 } ))
 router.get("/forgotPassword", ((req, res) =>{
-    res.render('forgotPassword')
+    res.render('forgotPassword', {layout: "main1.hbs"})
 } ))
 
 router.post("/admin_signin" , adminSignin);
