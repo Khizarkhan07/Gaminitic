@@ -209,13 +209,13 @@ exports.signin =  (req, res) => {
         if(err || !user){
             return res.status(400).json({
                 success : false,
-                data: "User with email doesnot exists"
+                email: "User with email doesnot exists"
             })
         }
         if (!user.authenticate(password)){
             return res.status(400).json({
                 success : false,
-                data: "Email and password doesnot match!"
+                password: "Email and password doesnot match!"
             })
         }
 
