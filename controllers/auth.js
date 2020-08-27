@@ -45,6 +45,36 @@ exports.signupOtp = async (req, res) => {
 
 }
 
+
+exports.verifyNumber =  (req, res) => {
+    const otp= req.body.otp;
+
+    User.findOne({otp}, (err, user)=>{
+        if(err || !user){
+            return res.json({
+                error: "Invalid Otp"
+            })
+        }
+
+        return user.updateOne({ otp: "" }, (err, success) => {
+            if (err) {
+                return res.json({ message: err });
+            } else {
+                const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
+
+                res.cookie("t", token, {expire: Date.now()+999});
+
+                const {_id, name, email}= user;
+                return res.json({user: {_id, name , email, token}});
+            }
+        });
+
+
+    });
+}
+
+
+
 exports.signup = async (req, res, next)=>{
     const ipAddress = requestIp.getClientIp(req);
     req.body.ipAddress = ipAddress;

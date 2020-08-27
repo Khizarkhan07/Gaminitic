@@ -2,6 +2,10 @@ var mongoose =require("mongoose");
 const crypto = require('crypto');
 const { v1: uuidv1 } = require('uuid');
 var UserSchema = new mongoose.Schema({
+    status : {
+      type: String
+    },
+
     name: {
         type: String,
         trim: true,
