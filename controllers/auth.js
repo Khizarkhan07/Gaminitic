@@ -1,4 +1,5 @@
 const  User = require("../models/user");
+const  Temp_user = require("../models/temp_user");
 const { sendEmail } = require("../helpers");
 const jwt = require("jsonwebtoken");
 const expressjwt = require("express-jwt");
@@ -15,19 +16,19 @@ exports.signupOtp = async (req, res) => {
     const user_number = req.body.user_number;
     console.log(user_number);
 
-    const numberExists = await User.findOne({user_number: req.body.user_number});
+    const numberExists = await Temp_user.findOne({user_number: req.body.user_number});
     if (numberExists) {
         return res.status(400).json({
-            error: "Phone number is taken"
+            phone: "Phone number is taken"
         });
     }
 
     // generate a otp
     const otp = (Math.floor(100000 + Math.random() * 900000));
-    const user = await new User(req.body);
-    user.otp = otp;
+    const temp_user = await new Temp_user(req.body);
+    temp_user.otp = otp;
 
-    user.save((err, user)=> {
+    temp_user.save((err, user)=> {
         if (err) {
             return res.json({message: err});}
         else {
@@ -208,14 +209,18 @@ exports.signin =  (req, res) => {
     User.findOne({ $or: [ { email: email_or_phone }, { user_number: email_or_phone } ] }, (err, user)=>{
         if(err || !user){
             return res.status(400).json({
-                success : false,
-                email: "User with email doesnot exists"
+                errors: {
+                    success : false,
+                    email: "User with email doesnot exists"
+                }
             })
         }
         if (!user.authenticate(password)){
             return res.status(400).json({
-                success : false,
-                password: "Email and password doesnot match!"
+                errors: {
+                    success : false,
+                    password: "Email and password doesnot match!"
+                }
             })
         }
 
