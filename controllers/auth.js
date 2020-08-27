@@ -444,13 +444,15 @@ exports.resetPassword = (req, res) => {
 
 
 exports.setQuestion = (req, res) => {
-    const {user_number, security_question, security_answer } = req.body;
+    const {security_question, security_answer } = req.body;
 
-    User.findOne({ user_number }, (err, user) => {
+    User.findById(req.auth._id, (err, user) => {
         // if err or no user
         if (err || !user)
             return res.status(400).json({
-                error: "Invalid phone number!"
+                error: {
+                    auth: "user not logged in!"
+                }
             });
 
         const updatedFields = {
