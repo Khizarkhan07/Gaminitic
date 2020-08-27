@@ -17,7 +17,7 @@ exports.signupOtp = async (req, res) => {
 
     const numberExists = await User.findOne({user_number: req.body.user_number});
     if (numberExists) {
-        return res.json({
+        return res.status(400).json({
             error: "Phone number is taken"
         });
     }
@@ -52,7 +52,7 @@ exports.verifyNumber =  (req, res) => {
 
     User.findOne({otp}, (err, user)=>{
         if(err || !user){
-            return res.json({
+            return res.status(400).json({
                 error: "Invalid Otp"
             })
         }
@@ -75,7 +75,7 @@ exports.signup = async (req, res, next)=>{
 
     const numberExists = await User.findOne({user_number:req.body.user_number});
         if (!numberExists){
-            return res.json({
+            return res.status(400).json({
                 error: "PhoneNumber is not verified"
             });
         }
@@ -88,7 +88,7 @@ exports.signup = async (req, res, next)=>{
             const email = req.body.email;
             const userExists = await User.findOne({email:req.body.email});
             if(userExists){
-                return res.json({
+                return res.status(400).json({
                     error: "Email is taken"
                 });
             }
@@ -133,7 +133,7 @@ verifyAccount = (req, res) => {
     User.findOne({ email }, (err, user) => {
         // if err or no user
         if (err || !user)
-            return res.json({
+            return res.status(400).json({
                 error: "User with that email does not exist!"
             });
 
@@ -158,7 +158,7 @@ verifyAccount = (req, res) => {
 
         return user.updateOne({ verifyAccountLink: token }, (err, success) => {
             if (err) {
-                return res.json({ message: err });
+                return res.status(400).json({ message: err });
             } else {
                 sendEmail(emailData);
                 res.json({message: "sign up success"})
@@ -255,7 +255,7 @@ exports.sendOtp = (req, res) => {
     User.findOne({ user_number }, (err, user) => {
         // if err or no user
         if (err || !user)
-            return res.json({
+            return res.status(400).json({
                 error: "User with that phone number does not exist!"
             });
 
@@ -265,7 +265,7 @@ exports.sendOtp = (req, res) => {
 
     return user.updateOne({ otp: otp }, (err, success) => {
         if (err) {
-            return res.json({ message: err });
+            return res.status(400).json({ message: err });
         } else {
             client.messages
                 .create({
@@ -287,14 +287,14 @@ exports.Otpsignin =  (req, res) => {
 
     User.findOne({otp}, (err, user)=>{
         if(err || !user){
-            return res.json({
+            return res.status(400).json({
                 error: "Invalid Otp"
             })
         }
 
         return user.updateOne({ otp: "" }, (err, success) => {
             if (err) {
-                return res.json({ message: err });
+                return res.status(400).json({ error: err });
             } else {
                 const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
 
@@ -310,9 +310,9 @@ exports.Otpsignin =  (req, res) => {
 }
 
 exports.forgotPassword = (req, res) => {
-    if (!req.body) return res.json({ message: "No request body" });
+    if (!req.body) return res.status(400).json({ message: "No request body" });
     if (!req.body.email)
-        return res.json({ message: "No Email in request body" });
+        return res.status(400).json({ message: "No Email in request body" });
 
     console.log("forgot password finding user with that email");
     const { email } = req.body;
@@ -321,7 +321,7 @@ exports.forgotPassword = (req, res) => {
     User.findOne({ email }, (err, user) => {
         // if err or no user
         if (err || !user)
-            return res.json({
+            return res.status(400).json({
                 error: "User with that email does not exist!"
             });
 
@@ -346,7 +346,7 @@ exports.forgotPassword = (req, res) => {
 
         return user.updateOne({ resetPasswordLink: token }, (err, success) => {
             if (err) {
-                return res.json({ message: err });
+                return res.status(400).json({ error: err });
             } else {
                 sendEmail(emailData);
                 return res.status(200).json({
@@ -363,7 +363,7 @@ exports.resetPassword = (req, res) => {
     User.findOne({ resetPasswordLink }, (err, user) => {
         // if err or no user
         if (err || !user)
-            return res.json({
+            return res.status(400).json({
                 error: "Invalid Link!"
             });
 
@@ -377,7 +377,7 @@ exports.resetPassword = (req, res) => {
 
         user.save((err, result) => {
             if (err) {
-                return res.json({
+                return res.status(400).json({
                     error: err
                 });
             }
@@ -395,7 +395,7 @@ exports.setQuestion = (req, res) => {
     User.findOne({ user_number }, (err, user) => {
         // if err or no user
         if (err || !user)
-            return res.json({
+            return res.status(400).json({
                 error: "Invalid phone number!"
             });
 
@@ -409,7 +409,7 @@ exports.setQuestion = (req, res) => {
 
         user.save((err, result) => {
             if (err) {
-                return res.json({
+                return res.status(400).json({
                     error: err
                 });
             }
@@ -426,7 +426,7 @@ exports.getQuestion = (req, res) => {
     User.findOne({ user_number }, (err, user) => {
         // if err or no user
         if (err || !user)
-            return res.json({
+            return res.status(400).json({
                 error: "Invalid phone number!"
             });
         res.json({
@@ -441,20 +441,20 @@ exports.checkAnswer = (req, res) => {
     User.findOne({ user_number }, (err, user) => {
         // if err or no user
         if (err || !user)
-            return res.json({
+            return res.status(400).json({
                 error: "Incorrect phone number"
             });
         else {
             User.findOne({user_number, security_question}, (err, user)=> {
                 if(err|| !user){
-                    return res.json({
+                    return res.status(400).json({
                         error: "Incorrect Question"
                     });
                 }
                 else {
                     User.findOne({user_number, security_question, security_answer}, (err, user)=> {
                         if(err|| !user){
-                            return res.json({
+                            return res.status(400).json({
                                 error: "Incorrect Answer"
                             });
                         }
@@ -466,7 +466,6 @@ exports.checkAnswer = (req, res) => {
                     })
                 }
             })
-
         }
 
     }).select("security_question security_answer user_number");
@@ -478,7 +477,7 @@ exports.resetPasswordSecurity = (req, res) => {
     User.findOne({ user_number, security_question, security_answer}, (err, user) => {
         // if err or no user
         if (err || !user)
-            return res.json({
+            return res.status(400).json({
                 error: "Invalid User!"
             });
 
@@ -491,7 +490,7 @@ exports.resetPasswordSecurity = (req, res) => {
 
         user.save((err, result) => {
             if (err) {
-                return res.json({
+                return res.status(400).json({
                     error: err
                 });
             }
