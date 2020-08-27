@@ -200,12 +200,12 @@ exports.verifyLink = (req, res) => {
 
 exports.signin =  (req, res) => {
     if(req.body.email){
-        req.body.email= req.body.email.toLowerCase();
+        req.body.email_or_phone= req.body.email_or_phone.toLowerCase();
     }
-    console.log(req.body.email)
-    const {email , password, user_number} = req.body;
+    console.log(req.body.email_or_phone)
+    const {email_or_phone , password} = req.body;
 
-    User.findOne({ $or: [ { email: email }, { user_number: user_number } ] }, (err, user)=>{
+    User.findOne({ $or: [ { email: email_or_phone }, { user_number: email_or_phone } ] }, (err, user)=>{
         if(err || !user){
             return res.status(400).json({
                 success : false,
