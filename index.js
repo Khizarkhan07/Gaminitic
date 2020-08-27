@@ -11,7 +11,9 @@ const http = require("http").Server(app);
 
 var fs = require('fs'); // required for file serving
 app.use(express.static('assets'));
-app.use(express.static(__dirname + "/public"));
+
+//app.use(express.static(__dirname + "/public"));
+
 app.use(express.static(path.join(__dirname, '/views')))
 app.engine('hbs', exphbs({
     defaultLayout: 'main',
