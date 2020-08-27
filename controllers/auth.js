@@ -101,11 +101,12 @@ exports.signup = async (req, res, next)=>{
             req.body.ipAddress = ipAddress;
             console.log(ipAddress)
             req.body.email=req.body.email.toLowerCase();
-
+            console.log(req.body.username);
             const usernameExists = await User.findOne({username:req.body.username});
             if(usernameExists){
+                console.log("here")
                 return res.status(400).json({
-                    error: {
+                    errors: {
                         username: "User name is already taken"
                     }
                 });
@@ -114,7 +115,7 @@ exports.signup = async (req, res, next)=>{
             const userExists = await User.findOne({email:req.body.email});
             if(userExists){
                 return res.status(400).json({
-                    error: {
+                    errors: {
                         email: "Email is already taken"
                     }
                 });
