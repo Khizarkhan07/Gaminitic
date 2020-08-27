@@ -51,14 +51,14 @@ app.use(cors());
 
 
 
-app.use('/', authRoutes);
-app.use('/', userRoutes);
-app.use('/', connectionRoutes);
-app.use('/', adminRoutes);
-app.use('/', scheduleRoutes);
-app.use('/', gameRoutes);
-app.use('/', inviteRoutes);
-app.use('/', chatRoutes);
+app.use('/api/', authRoutes);
+app.use('/api/', userRoutes);
+app.use('/api/', connectionRoutes);
+app.use('/api/', adminRoutes);
+app.use('/api/', scheduleRoutes);
+app.use('/api/', gameRoutes);
+app.use('/api/', inviteRoutes);
+app.use('/api/', chatRoutes);
 
 
 
