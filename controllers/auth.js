@@ -203,17 +203,19 @@ exports.signin =  (req, res) => {
         req.body.email= req.body.email.toLowerCase();
     }
     console.log(req.body.email)
-    const {email , password} = req.body;
+    const {email , password, user_number} = req.body;
 
-    User.findOne({email}, (err, user)=>{
+    User.findOne({ $or: [ { email: email }, { user_number: user_number } ] }, (err, user)=>{
         if(err || !user){
-            return res.json({
-                error: "User with this email doesnot exist!"
+            return res.status(400).json({
+                success : false,
+                data: "User with email doesnot exists"
             })
         }
         if (!user.authenticate(password)){
-            return res.json({
-                error: "Email and password doesnot match!"
+            return res.status(400).json({
+                success : false,
+                data: "Email and password doesnot match!"
             })
         }
 
@@ -222,9 +224,16 @@ exports.signin =  (req, res) => {
         res.cookie("t", token, {expire: Date.now()+999});
 
         const {_id, name, email}= user;
-        return res.json({user: {_id, name , email, token}});
+
+        return res.json({
+            success: true,
+            user: {_id, name , email, token}
+        });
     });
 }
+
+
+
 
 exports.signout = (req, res)=> {
     res.clearCookie("t");
