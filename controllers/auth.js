@@ -31,13 +31,14 @@ exports.signupOtp = async (req, res) => {
         if (err) {
             return res.json({message: err});}
         else {
+            console.log("herre")
             client.messages
                 .create({
                     body: `This is your gaminatic otp: ${otp}`,
                     from: '+19097841248',
                     to: user_number
                 })
-                .then(message => res.json({message: "Otp is send to your phone number"}));
+                .then(message => res.json({message}));
 
         }
     })
@@ -56,16 +57,11 @@ exports.verifyNumber =  (req, res) => {
             })
         }
 
-        return user.updateOne({ otp: "" }, (err, success) => {
+        return user.updateOne({ otp: "", status: "phoneVerified" }, (err, success) => {
             if (err) {
                 return res.json({ message: err });
             } else {
-                const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
-
-                res.cookie("t", token, {expire: Date.now()+999});
-
-                const {_id, name, email}= user;
-                return res.json({user: {_id, name , email, token}});
+                return res.json({ message: "Verified" });
             }
         });
 
@@ -76,30 +72,56 @@ exports.verifyNumber =  (req, res) => {
 
 
 exports.signup = async (req, res, next)=>{
-    const ipAddress = requestIp.getClientIp(req);
-    req.body.ipAddress = ipAddress;
-    console.log(ipAddress)
-    req.body.email=req.body.email.toLowerCase();
-    const email = req.body.email;
-    const userExists = await User.findOne({email:req.body.email});
-    if(userExists){
-        return res.json({
-            error: "Email is taken"
-        });
-    }
+
     const numberExists = await User.findOne({user_number:req.body.user_number});
-    if(numberExists){
-        return res.json({
-            error: "Phone number is taken"
-        });
-    }
+        if (!numberExists){
+            return res.json({
+                error: "PhoneNumber is not verified"
+            });
+        }
+        else {
 
-    const user = await new User(req.body);
-    await user.save();
+            const ipAddress = requestIp.getClientIp(req);
+            req.body.ipAddress = ipAddress;
+            console.log(ipAddress)
+            req.body.email=req.body.email.toLowerCase();
+            const email = req.body.email;
+            const userExists = await User.findOne({email:req.body.email});
+            if(userExists){
+                return res.json({
+                    error: "Email is taken"
+                });
+            }
+            else {
+                User.findOne({user_number:req.body.user_number} ,(err, user)=> {
+                    user.ipAddress = ipAddress;
+                    user.name = req.body.name;
+                    user.username = req.body.username;
+                    user.email = req.body.email;
+                    user.password= req.body.password;
+                    if(req.body.psn_tag){
+                        user.psn_tag= req.body.psn_tag
+                    }
+                    if(req.body.xbox_tag){
+                        user.xbox_tag= req.body.xbox_tag
+                    }
+                    if(req.body.is_public){
+                        user.is_public = true;
+                    }
+                    else {
+                        user.is_public = false;
+                    }
+                    user.save((err, user)=> {
+                        verifyAccount(req, res);
 
-    res.status(200).json({message : "Signup is succesfull"});
-    verifyAccount(req, res);
-    next();
+                    });
+
+
+                })
+            }
+
+
+        }
 };
 
 
@@ -139,7 +161,7 @@ verifyAccount = (req, res) => {
                 return res.json({ message: err });
             } else {
                 sendEmail(emailData);
-
+                res.json({message: "sign up success"})
             }
         });
     });

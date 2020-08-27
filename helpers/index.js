@@ -21,6 +21,7 @@ exports.sendEmail = emailData => {
         }
         else {
             console.log('Message sent');
+
         }
     });
 

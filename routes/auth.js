@@ -11,10 +11,12 @@ const {signup,
     setQuestion,
     getQuestion ,
     checkAnswer ,
-    resetPasswordSecurity} = require("../controllers/auth");
+    resetPasswordSecurity, signupOtp, verifyNumber } = require("../controllers/auth");
 const {validate, userValidationRules, passwordlidationRules, securityvalidationRules} = require("../validator/index")
 
 router.post("/register", userValidationRules(), validate ,signup);
+router.post("/phone_register",signupOtp);
+router.post("/phone_verify",verifyNumber);
 router.put("/verify-account" ,verifyLink);
 router.post("/signin" ,signin);
 router.get("/signout", signout);

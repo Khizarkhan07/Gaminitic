@@ -42,7 +42,7 @@ var UserSchema = new mongoose.Schema({
     biography: {
         type: String,
         trim : true,
-        required: true
+
     },
     address: {
         type: String,
