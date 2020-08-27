@@ -77,7 +77,11 @@ exports.addConsole = async (req, res) => {
 
 exports.getGames = (req, res) => {
     Game.find((err, game)=> {
-        return res.json(game)
+
+        Console.find((err, console)=> {
+            return res.json({console, game})
+        })
+
     })
 }
 exports.getSingleGame = (req, res)=> {

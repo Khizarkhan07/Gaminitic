@@ -36,6 +36,7 @@ const gameRoutes = require("./routes/game");
 const adminRoutes = require("./routes/admin");
 const inviteRoutes = require("./routes/invite");
 const chatRoutes = require("./routes/chat");
+const preferenceRoutes = require("./routes/prefernce");
 
 const Chat = require("./models/chat");
 const Message = require("./models/message");
@@ -59,6 +60,7 @@ app.use('/api/', scheduleRoutes);
 app.use('/api/', gameRoutes);
 app.use('/api/', inviteRoutes);
 app.use('/api/', chatRoutes);
+app.use('/api/', preferenceRoutes);
 
 
 
