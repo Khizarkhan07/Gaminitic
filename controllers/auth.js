@@ -10,6 +10,41 @@ const client = require('twilio')(accountSid, authToken);
 const requestIp = require('request-ip');
 
 
+
+exports.signupOtp = async (req, res) => {
+    const user_number = req.body.user_number;
+    console.log(user_number);
+
+    const numberExists = await User.findOne({user_number: req.body.user_number});
+    if (numberExists) {
+        return res.json({
+            error: "Phone number is taken"
+        });
+    }
+
+    // generate a otp
+    const otp = (Math.floor(100000 + Math.random() * 900000));
+    const user = await new User(req.body);
+    user.otp = otp;
+
+    user.save((err, user)=> {
+        if (err) {
+            return res.json({message: err});}
+        else {
+            client.messages
+                .create({
+                    body: `This is your gaminatic otp: ${otp}`,
+                    from: '+19097841248',
+                    to: user_number
+                })
+                .then(message => res.json({message: "Otp is send to your phone number"}));
+
+        }
+    })
+
+
+}
+
 exports.signup = async (req, res, next)=>{
     const ipAddress = requestIp.getClientIp(req);
     req.body.ipAddress = ipAddress;
@@ -152,29 +187,25 @@ exports.requireSignin = expressjwt({
 
 
 
-exports.sendOtp = async (req, res) => {
+exports.sendOtp = (req, res) => {
     const user_number = req.body.user_number;
     console.log(user_number);
 
-    const numberExists = await User.findOne({user_number: req.body.user_number});
-    if (numberExists) {
-        return res.json({
-            error: "Phone number is taken"
-        });
-    }
-
-
-
+    User.findOne({ user_number }, (err, user) => {
+        // if err or no user
+        if (err || !user)
+            return res.json({
+                error: "User with that phone number does not exist!"
+            });
 
         // generate a otp
-    const otp = (Math.floor(100000 + Math.random() * 900000));
-    const user = await new User(req.body);
-    user.otp = otp;
+        const otp= (Math.floor(100000 + Math.random() * 900000));
 
-    user.save((err, user)=> {
+
+    return user.updateOne({ otp: otp }, (err, success) => {
         if (err) {
-            return res.json({message: err});}
-        else {
+            return res.json({ message: err });
+        } else {
             client.messages
                 .create({
                     body: `This is your gaminatic login otp: ${otp}`,
@@ -184,8 +215,8 @@ exports.sendOtp = async (req, res) => {
                 .then(message => res.json({message: "Otp is send to your phone number"}));
 
         }
-    })
-
+    });
+});
 
 }
 
