@@ -16,46 +16,54 @@
     </div>
 </div>
 
+<div class="card" style="
+    padding: 10px;
+    margin: 20px;
+    background-color: #f8f9fa!important;
+    border-bottom: 1px solid #dee2e6!important;
+    ">
 
-<table id="user-table" class="table table-striped table-bordered" style="width:100%">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Details</th>
-    </tr>
-    </thead>
-    <tbody>
-    {{#each users}}
+
+    <table id="user-table" class="table table-striped table-bordered" style="width:100%">
+        <thead>
         <tr>
-            <td>
-
-            </td>
-            <td>
-                {{this.name}}
-            </td>
-            <td>
-                {{this.email}}
-            </td>
-            <td>
-                {{this.role}}
-            </td>
-            <td>
-                <a id="single-user" onclick="myFunction()" type="button" href="/user/{{this._id}}">View</a>
-            </td>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Details</th>
         </tr>
-    {{/each}}
+        </thead>
+        <tbody>
+        {{#each users}}
+            <tr>
+                <td>
 
-    </tbody>
-    <tfoot>
-    <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Details</th>
-    </tr>
-    </tfoot>
-</table>
+                </td>
+                <td>
+                    {{this.name}}
+                </td>
+                <td>
+                    {{this.email}}
+                </td>
+                <td>
+                    {{this.role}}
+                </td>
+                <td>
+                    <a id="single-user" onclick="myFunction()" type="button" href="/user/{{this._id}}">View</a>
+                </td>
+            </tr>
+        {{/each}}
+
+        </tbody>
+        <tfoot>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Details</th>
+        </tr>
+        </tfoot>
+    </table>
+</div>

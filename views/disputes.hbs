@@ -1,4 +1,3 @@
-
 <div class="content-header row" style="margin: 10px;">
     <div class="content-header-left col-md-6 col-12 mb-2">
         <h3 class="content-header-title">
@@ -16,64 +15,75 @@
     </div>
 </div>
 
-<table id="dispute-table" class="table table-striped table-bordered" style="width:100%">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Dispute User</th>
-        <th>Game</th>
-        <th>User 1</th>
-        <th>User 2</th>
-        <th>Match Time</th>
-        <th>Status</th>
-        <th>Details</th>
-    </tr>
-    </thead>
-    <tbody>
-    {{#each match}}
+
+
+<div class="card" style="
+    padding: 10px;
+    margin: 20px;
+    background-color: #f8f9fa!important;
+    border-bottom: 1px solid #dee2e6!important;
+    ">
+
+    <table id="dispute-table" class="table table-striped table-bordered" style="width:100%">
+        <thead>
         <tr>
-            <td>
-
-            </td>
-            <td>
-                {{this.dispute_user_id.name}}
-            </td>
-            <td>
-                {{this.game_id.name}}
-            </td>
-            <td>
-                {{this.user1_id.name}}
-            </td>
-            <td>
-                {{this.user2_id.name}}
-            </td>
-            <td>
-                {{this.match_time}}
-            </td>
-            <td>
-                {{this.status}}
-            </td>
-            <td>
-                <a type="button" href="/disputes/{{this._id}}">View</a>
-            </td>
+            <th>#</th>
+            <th>Dispute User</th>
+            <th>Game</th>
+            <th>User 1</th>
+            <th>User 2</th>
+            <th>Match Time</th>
+            <th>Status</th>
+            <th>Details</th>
         </tr>
-    {{/each}}
+        </thead>
+        <tbody>
+        {{#each match}}
+            <tr>
+                <td>
 
-    </tbody>
-    <tfoot>
-    <tr>
-        <th>#</th>
-        <th>Dispute User</th>
-        <th>Game</th>
-        <th>User 1</th>
-        <th>User 2</th>
-        <th>Match Time</th>
-        <th>Status</th>
-        <th>Details</th>
-    </tr>
-    </tfoot>
-</table>
+                </td>
+                <td>
+                    {{this.dispute_user_id.name}}
+                </td>
+                <td>
+                    {{this.game_id.name}}
+                </td>
+                <td>
+                    {{this.user1_id.name}}
+                </td>
+                <td>
+                    {{this.user2_id.name}}
+                </td>
+                <td>
+                    {{this.match_time}}
+                </td>
+                <td>
+                    {{this.status}}
+                </td>
+                <td>
+                    <a type="button" href="/disputes/{{this._id}}">View</a>
+                </td>
+            </tr>
+        {{/each}}
 
+        </tbody>
+        <tfoot>
+        <tr>
+            <th>#</th>
+            <th>Dispute User</th>
+            <th>Game</th>
+            <th>User 1</th>
+            <th>User 2</th>
+            <th>Match Time</th>
+            <th>Status</th>
+            <th>Details</th>
+        </tr>
+        </tfoot>
+    </table>
+
+
+</div>
 {{#if login}}
     <script>
         // Check browser support

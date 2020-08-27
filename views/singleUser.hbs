@@ -14,77 +14,88 @@
             </div>
         </div>
     </div>
+</div>
 
-<div>
-    <div class="container">
-        <h4> Role Assignment </h4>
-        {{#if message}}
-            <div class="alert alert-success" role="alert">
-                {{message}}
-            </div>
+<div class="card" style="
+    padding: 10px;
+    margin: 20px;
+    background-color: #f8f9fa!important;
+    border-bottom: 1px solid #dee2e6!important;
+    ">
 
-        {{/if}}
 
-        {{#if error}}
-            <div class="alert alert-danger" role="alert">
-                {{error}}
-            </div>
-        {{/if}}
-        <div style="margin-top: 20px" class="row">
-            <div class="col-md-8">
-                <div class="card">
-                    <h5  style="padding: 20px " class="card-title"> <i class="fa fa-user"></i> Details</h5>
-                    <hr/>
-                    <div style="padding: 20px" class={"card-body"}>
-                        <div class={"row"}>
-                            <div class={"col-md-6"}>
-                                <p class={"m-0"}><b>Name</b></p>
-                                <p>{{user.name}}</p>
+    <div>
+        <div class="container">
+            <h4> Role Assignment </h4>
+            {{#if message}}
+                <div class="alert alert-success" role="alert">
+                    {{message}}
+                </div>
 
-                                <p class={"m-0"}><b>Email</b></p>
-                                <p>{{user.email}}</p>
+            {{/if}}
 
-                                <p class={"m-0"}><b>Role</b></p>
-                                <p>{{user.role}}</p>
+            {{#if error}}
+                <div class="alert alert-danger" role="alert">
+                    {{error}}
+                </div>
+            {{/if}}
+            <div style="margin-top: 20px" class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <h5  style="padding: 20px " class="card-title"> <i class="fa fa-user"></i> Details</h5>
+                        <hr/>
+                        <div style="padding: 20px" class={"card-body"}>
+                            <div class={"row"}>
+                                <div class={"col-md-6"}>
+                                    <p class={"m-0"}><b>Name</b></p>
+                                    <p>{{user.name}}</p>
 
-                                <p class={"m-0"}><b>Created</b></p>
-                                <p>{{user.created}}</p>
+                                    <p class={"m-0"}><b>Email</b></p>
+                                    <p>{{user.email}}</p>
+
+                                    <p class={"m-0"}><b>Role</b></p>
+                                    <p>{{user.role}}</p>
+
+                                    <p class={"m-0"}><b>Created</b></p>
+                                    <p>{{user.created}}</p>
+                                </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class={"col-md-4"}>
-                <div class={"card"}>
-                    <h5 class={"card-title"}> <i class="fa fa-cog"></i> Actions</h5>
-                    <hr/>
-                    <div class={"card-body"}>
-                        <p>Role Status: <b> {{user.role}}</b></p>
+                <div class={"col-md-4"}>
+                    <div class={"card"}>
+                        <h5 class={"card-title"}> <i class="fa fa-cog"></i> Actions</h5>
+                        <hr/>
+                        <div class={"card-body"}>
+                            <p>Role Status: <b> {{user.role}}</b></p>
+                        </div>
+
+                        <div style="margin-top: 50px">
+                            <h6>Assign Role</h6>
+                            <hr>
+                        </div>
+
+                        <form action="http://localhost:8080/assign_role/" method="POST" >
+
+                            <label for="sel1">Role:</label>
+                            <select class="form-control" name="role" required>
+
+                                <option value="admin">Admin</option>
+                                <option value="superadmin">SuperAdmin</option>
+                                <option value="user">User</option>
+                            </select>
+
+                            <input type="hidden" value="{{user._id}}" name="user_id"/>
+                            <button style="margin-top: 10px" class="btn btn-danger" type="submit">
+                                Assign
+                            </button>
+                        </form>
                     </div>
-
-                    <div style="margin-top: 50px">
-                        <h6>Assign Role</h6>
-                        <hr>
-                    </div>
-
-                    <form action="http://localhost:8080/assign_role/" method="POST" >
-
-                        <label for="sel1">Role:</label>
-                        <select class="form-control" name="role" required>
-
-                            <option value="admin">Admin</option>
-                            <option value="superadmin">SuperAdmin</option>
-                            <option value="user">User</option>
-                        </select>
-
-                        <input type="hidden" value="{{user._id}}" name="user_id"/>
-                        <button style="margin-top: 10px" class="btn btn-danger" type="submit">
-                            Assign
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
