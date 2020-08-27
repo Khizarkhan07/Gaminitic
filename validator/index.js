@@ -18,12 +18,6 @@ const userValidationRules = () => {
     return [
         body("name", "name is required").notEmpty(),
         body("is_public", "account type is required").isBoolean().notEmpty(),
-    body("biography", "biography is required").notEmpty().withMessage("Biography must be between 500 characters").isLength(
-        {
-            min:4,
-            max:500
-        }
-    ),
 
     body("email", "email must be between 3 to 32")
         .matches(/.+\@.+\..+/ )
