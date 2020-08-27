@@ -152,25 +152,29 @@ exports.requireSignin = expressjwt({
 
 
 
-exports.sendOtp = (req, res) => {
+exports.sendOtp = async (req, res) => {
     const user_number = req.body.user_number;
     console.log(user_number);
 
-    User.findOne({ user_number }, (err, user) => {
-        // if err or no user
-        if (err || !user)
-            return res.json({
-                error: "User with that phone number does not exist!"
-            });
+    const numberExists = await User.findOne({user_number: req.body.user_number});
+    if (numberExists) {
+        return res.json({
+            error: "Phone number is taken"
+        });
+    }
+
+
+
 
         // generate a otp
-        const otp= (Math.floor(100000 + Math.random() * 900000));
+    const otp = (Math.floor(100000 + Math.random() * 900000));
+    const user = await new User(req.body);
+    user.otp = otp;
 
-
-    return user.updateOne({ otp: otp }, (err, success) => {
+    user.save((err, user)=> {
         if (err) {
-            return res.json({ message: err });
-        } else {
+            return res.json({message: err});}
+        else {
             client.messages
                 .create({
                     body: `This is your gaminatic login otp: ${otp}`,
@@ -180,8 +184,8 @@ exports.sendOtp = (req, res) => {
                 .then(message => res.json({message: "Otp is send to your phone number"}));
 
         }
-    });
-});
+    })
+
 
 }
 

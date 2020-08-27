@@ -5,20 +5,20 @@ var UserSchema = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
-        required: true
+
     },
     username: {
         type: String,
-        trim: true,
+
     },
     email:{
         type: String,
         trim: true,
-        required: true
+
     },
     hashed_password:{
         type: String,
-        required: true
+
     },
     user_number: {
         type:String,
@@ -99,7 +99,6 @@ var UserSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "block_history"
     }],
-
 
     }
 );
