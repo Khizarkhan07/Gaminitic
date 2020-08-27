@@ -16,11 +16,13 @@ exports.signupOtp = async (req, res) => {
     const user_number = req.body.user_number;
     console.log(user_number);
 
-    const numberExists = await Temp_user.findOne({user_number: req.body.user_number});
+    const numberExists = await User.findOne({user_number: req.body.user_number});
     if (numberExists) {
         return res.status(400).json({
-            phone: "Phone number is taken"
-        });
+            errors: {
+                user_number: "Phone number is taken"
+            }
+        })
     }
 
     // generate a otp
@@ -30,9 +32,14 @@ exports.signupOtp = async (req, res) => {
 
     temp_user.save((err, user)=> {
         if (err) {
-            return res.json({message: err});}
+            return res.status(400).json({
+                errors: {
+                    err
+                }
+            })
+        }
+
         else {
-            console.log("herre")
             client.messages
                 .create({
                     body: `This is your gaminatic otp: ${otp}`,
@@ -44,23 +51,28 @@ exports.signupOtp = async (req, res) => {
         }
     })
 
-
 }
 
 
 exports.verifyNumber =  (req, res) => {
     const otp= req.body.otp;
 
-    User.findOne({otp}, (err, user)=>{
+    Temp_user.findOne({otp}, (err, user)=>{
         if(err || !user){
             return res.status(400).json({
-                error: "Invalid Otp"
+                errors: {
+                    otp: "invalid otp"
+                }
             })
         }
 
-        return user.updateOne({ otp: "", status: "phoneVerified" }, (err, success) => {
+        return user.updateOne({ otp: "" }, (err, success) => {
             if (err) {
-                return res.json({ message: err });
+                return res.jstatus(400).json({
+                    errors: {
+                        err
+                    }
+                })
             } else {
                 return res.json({ message: "Verified" });
             }
@@ -74,10 +86,13 @@ exports.verifyNumber =  (req, res) => {
 
 exports.signup = async (req, res, next)=>{
 
-    const numberExists = await User.findOne({user_number:req.body.user_number});
+    const numberExists = await Temp_user.findOne({user_number:req.body.user_number});
         if (!numberExists){
             return res.status(400).json({
-                error: "PhoneNumber is not verified"
+
+                errors: {
+                    user_number: "phone number is not verified"
+                }
             });
         }
         else {
@@ -86,7 +101,7 @@ exports.signup = async (req, res, next)=>{
             req.body.ipAddress = ipAddress;
             console.log(ipAddress)
             req.body.email=req.body.email.toLowerCase();
-            const email = req.body.email;
+
             const userExists = await User.findOne({email:req.body.email});
             if(userExists){
                 return res.status(400).json({
@@ -94,7 +109,41 @@ exports.signup = async (req, res, next)=>{
                 });
             }
             else {
-                User.findOne({user_number:req.body.user_number} ,(err, user)=> {
+                let user = await new User(req.body)
+                user.ipAddress = ipAddress;
+
+                user.save((err, user)=> {
+                    if(err){
+                        return res.jstatus(400).json({
+                            errors: {
+                                err
+                            }
+                        })
+                    }
+                    else {
+                        Temp_user.remove({user_number:req.body.user_number}, (err, result)=> {
+                            if(err){
+                                console.log(err);
+                            }
+                            console.log("deleted")
+                        });
+
+                        /*verifyAccount(req, res);*/
+                        const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
+
+                        res.cookie("t", token, {expire: Date.now()+999});
+
+                        const {_id, name, email}= user;
+
+                        return res.json({
+                            success: true,
+                            user: {_id, name , email, token}
+                        });
+                    }
+                })
+
+
+                /*User.findOne({user_number:req.body.user_number} ,(err, user)=> {
                     user.ipAddress = ipAddress;
                     user.name = req.body.name;
                     user.username = req.body.username;
@@ -118,7 +167,7 @@ exports.signup = async (req, res, next)=>{
                     });
 
 
-                })
+                })*/
             }
 
 
