@@ -111,4 +111,23 @@ exports.deletePreference = (req, res)=> {
             }
         })
     }
+    else {
+        let pref = req.pref;
+        pref.remove((err, response)=> {
+            if(err){
+                return res.status(400).json({
+                    errors: {
+                        preference: "Error deleting preference"
+                    }
+                })
+            }
+            else {
+                return res.json({
+                        success: true,
+                        message: "Preference deleted successfully!"
+
+                })
+            }
+        })
+    }
 }
