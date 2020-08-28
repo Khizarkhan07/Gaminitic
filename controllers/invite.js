@@ -154,23 +154,27 @@ exports.upcoming = (req, res) => {
         }
         else {
             Match.find( { $or: [ {user1_id: user}, {user2_id: user } ], match_time: {$gte: new Date(Date.now())}  }, (err, match) =>{
-                var markedDates = {}
+                var markedDates = {
+                }
 
-
-                console.log(match[0].match_time)
-                const year = match[0].match_time.getFullYear();
-                const month = match[0].match_time.getMonth()+1;
-                console.log(month)
-
-                const date = match[0].match_time.getDate();
-                const fulldate = year+ "-" +month + "-"+ date
-
-                markedDates[fulldate] = {marked :true, selected:true, matches: [match[0]]};
-
-
+                for (var i=0; i< match.length; i++){
+                    const year = match[i].match_time.getFullYear();
+                    const month = match[i].match_time.getMonth()+1;
+                    const date = match[i].match_time.getDate();
+                    const fulldate = year+ "-" +month + "-"+ date
+                    console.log(fulldate)
+                    if(markedDates[fulldate] === undefined){
+                        console.log("here for:" + fulldate)
+                        markedDates[fulldate] = {marked :true, selected:true, matches: [match[i]]};
+                    }
+                    else {
+                        markedDates[fulldate].matches.push(match[i])
+                    }
+                }
 
                 return res.json({markedDates:markedDates})
-            })
+            }).populate('game_id', 'name').populate('user1_id', 'name').populate('user2_id', 'name')
+
 
         }
     })
