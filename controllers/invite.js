@@ -161,14 +161,15 @@ exports.upcoming = (req, res) => {
                     const year = match[i].match_time.getFullYear();
                     const month = match[i].match_time.getMonth()+1;
                     const date = match[i].match_time.getDate();
-                    const fulldate = year+ "-" +month + "-"+ date
+                    var fulldate = year+ "-" +month + "-"+ date
+                    fulldate = fulldate.toString()
                     console.log(fulldate)
-                    if(markedDates[fulldate+""] === undefined){
+                    if(markedDates[fulldate] === undefined){
                         console.log("here for:" + fulldate)
-                        markedDates[fulldate+""] = {marked :true, selected:true, matches: [match[i]]};
+                        markedDates[fulldate] = {marked :true, selected:true, matches: [match[i]]};
                     }
                     else {
-                        markedDates[fulldate+""].matches.push(match[i])
+                        markedDates[fulldate].matches.push(match[i])
                     }
                 }
 
