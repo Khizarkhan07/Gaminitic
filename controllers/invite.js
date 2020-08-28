@@ -173,7 +173,7 @@ exports.upcoming = (req, res) => {
                 }
 
                 return res.json({markedDates:markedDates})
-            }).populate('game_id', 'name').populate('user1_id', 'name').populate('user2_id', 'name')
+            }).populate('game_id', 'name photo').populate('user1_id', 'name xbox_tag psn_tag photo').populate('user2_id', 'name xbox_tag psn_tag photo')
 
 
         }

@@ -49,6 +49,10 @@ const matches = new moongose.Schema({
     under_review_by : {
         type: moongose.Schema.ObjectId,
         ref: "user"
+    },
+    betAmount : {
+        type: Number,
+        default:0
     }
 
 });

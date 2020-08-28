@@ -5,7 +5,7 @@ const {setschedule, getschedule, updateschedule} = require("../controllers/sched
 const {userById} = require("../controllers/user");
 const {requireSignin} = require("../controllers/auth");
 
-router.post('/set_schedule/:userId', requireSignin  , setschedule);
+router.post('/set_schedule/', requireSignin  , setschedule);
 router.put('/update_schedule/', requireSignin  , updateschedule);
 router.get('/get_schedule/:userId', requireSignin , getschedule)
 
