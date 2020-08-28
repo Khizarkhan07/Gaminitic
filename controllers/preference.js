@@ -21,60 +21,127 @@ exports.prefById = (req, res, next, id)=> {
 
 
 exports.set_preference = (req, res) => {
-    const {selectedGame, selectedConsole, difficulty, length} = req.body
-    console.log(req.auth._id)
-    User.findOne({_id: req.auth._id}, (err, user)=> {
-        if(err||!user){
-            return res.status(403).json ({
-                errors: {
-                    auth: "you are unauthorized"
-                }
-            })
-        }
-        else {
-            Console.findById(selectedConsole, (err, console)=> {
-                if(err||!console){
-                    return res.status(400).json ({
+    if(req.body.preferenceId) {
+        Preference.findById(req.body.preferenceId, (err, pref)=> {
+            if(err||!pref){
+                return res.status(400).json({
+                    errors: {
+                        preference: "Preference not found"
+                    }
+                })
+            }
+            else {
+                if(pref.userId._id != req.auth._id){
+                    return res.status(403).json({
                         errors: {
-                            console: "Console not found"
+                            auth: "You are not authorized to perform this action"
                         }
                     })
                 }
                 else {
-                    Game.findById(selectedGame, (err, game)=> {
-                        if(err||!game){
+                    const {selectedGame, selectedConsole, difficulty, length} = req.body
+
+                    Console.findById(selectedConsole, (err, console)=> {
+                        if(err||!console){
                             return res.status(400).json ({
                                 errors: {
-                                    game: "game not found"
+                                    console: "Console not found"
                                 }
                             })
                         }
                         else {
-                            let pref = new Preference();
-                            pref.difficulty= req.body.difficulty;
-                            pref.length= req.body.length;
-                            pref.userId = user;
-                            pref.selectedConsole= console;
-                            pref.selectedGame = game
-
-                            pref.save((err, pref)=> {
-                                if(err||!pref){
+                            Game.findById(selectedGame, (err, game)=> {
+                                if(err||!game){
                                     return res.status(400).json ({
                                         errors: {
-                                            preference: "error saving preference"
+                                            game: "game not found"
                                         }
                                     })
                                 }
                                 else {
-                                    return res.json(pref)
+
+                                    pref.difficulty= req.body.difficulty;
+                                    pref.length= req.body.length;
+                                    pref.selectedConsole= console;
+                                    pref.selectedGame = game
+
+                                    pref.save((err, pref)=> {
+                                        if(err||!pref){
+                                            return res.status(400).json ({
+                                                errors: {
+                                                    preference: "error saving preference"
+                                                }
+                                            })
+                                        }
+                                        else {
+                                            return res.json(pref)
+                                        }
+                                    })
                                 }
                             })
                         }
                     })
+
                 }
-            })
-        }
-    })
+            }
+        })
+    }
+    else {
+        const {selectedGame, selectedConsole, difficulty, length} = req.body
+        console.log(req.auth._id)
+        User.findOne({_id: req.auth._id}, (err, user)=> {
+            if(err||!user){
+                return res.status(403).json ({
+                    errors: {
+                        auth: "you are unauthorized"
+                    }
+                })
+            }
+            else {
+                Console.findById(selectedConsole, (err, console)=> {
+                    if(err||!console){
+                        return res.status(400).json ({
+                            errors: {
+                                console: "Console not found"
+                            }
+                        })
+                    }
+                    else {
+                        Game.findById(selectedGame, (err, game)=> {
+                            if(err||!game){
+                                return res.status(400).json ({
+                                    errors: {
+                                        game: "game not found"
+                                    }
+                                })
+                            }
+                            else {
+                                let pref = new Preference();
+                                pref.difficulty= req.body.difficulty;
+                                pref.length= req.body.length;
+                                pref.userId = user;
+                                pref.selectedConsole= console;
+                                pref.selectedGame = game
+
+                                pref.save((err, pref)=> {
+                                    if(err||!pref){
+                                        return res.status(400).json ({
+                                            errors: {
+                                                preference: "error saving preference"
+                                            }
+                                        })
+                                    }
+                                    else {
+                                        return res.json(pref)
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    }
 }
 
 exports.allPrefrences = (req, res)=> {
