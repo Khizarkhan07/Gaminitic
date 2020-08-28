@@ -24,37 +24,62 @@ exports.signupOtp = async (req, res) => {
             }
         })
     }
+    console.log(process.env.environment)
+    if(process.env.enviornment = 'local'){
+        console.log("here")
+        const temp_user = await new Temp_user(req.body);
+        temp_user.otp = "0000";
 
-    // generate a otp
-    const otp = (Math.floor(100000 + Math.random() * 900000));
-    const temp_user = await new Temp_user(req.body);
-    temp_user.otp = otp;
-
-    temp_user.save((err, user)=> {
-        if (err) {
-            return res.status(400).json({
-                errors: {
-                    err
-                }
-            })
-        }
-
-        else {
-            client.messages
-                .create({
-                    body: `This is your gaminatic otp: ${otp}`,
-                    from: '+19097841248',
-                    to: user_number
-                })
-                .then(message => res.json({message}))
-                .catch(e=> res.status(400).json({
+        temp_user.save((err, user)=> {
+            if (err) {
+                return res.status(400).json({
                     errors: {
-                        user_number: "Invalid Phone Number"
+                        err
                     }
-                }));
+                })
+            }
 
-        }
-    })
+            else {
+                return res.json({
+                    message: "Your otp is 0000"
+                })
+
+            }
+        })
+    }
+    else {
+        // generate a otp
+        const otp = (Math.floor(100000 + Math.random() * 900000));
+        const temp_user = await new Temp_user(req.body);
+        temp_user.otp = otp;
+
+        temp_user.save((err, user)=> {
+            if (err) {
+                return res.status(400).json({
+                    errors: {
+                        err
+                    }
+                })
+            }
+
+            else {
+                client.messages
+                    .create({
+                        body: `This is your gaminatic otp: ${otp}`,
+                        from: '+19097841248',
+                        to: user_number
+                    })
+                    .then(message => res.json({message}))
+                    .catch(e=> res.status(400).json({
+                        errors: {
+                            user_number: "Invalid Phone Number"
+                        }
+                    }));
+
+            }
+        })
+    }
+
 
 }
 
