@@ -60,3 +60,29 @@ exports.set_preference = (req, res) => {
         }
     })
 }
+
+exports.allPrefrences = (req, res)=> {
+    User.findById(req.auth._id, (err, user)=> {
+        if(err||!user){
+            return res.status(403).json({
+                errors: {
+                    auth: "You are not Athprized!"
+                }
+            })
+        }
+        else {
+            Preference.find({user_id:user}, (err, prefs)=> {
+                if(err){
+                    return res.status(400).json({
+                        errors: {
+                            preferences: "Error finding preferences"
+                        }
+                    })
+                }
+                else {
+                    return res.json({allPreference: prefs})
+                }
+            }).populate('console_id', 'name photo').populate('game_id', 'name photo')
+        }
+    })
+}

@@ -144,13 +144,37 @@ exports.acceptInvites = (req, res)=> {
 
 exports.upcoming = (req, res) => {
 
-    Match.find( { $or: [ {user1_id: req.profile}, {user2_id: req.profile } ], match_time: {$gte: new Date(Date.now())}  }, (err, match) =>{
-
-        if(err) {
-            return res.json(err);
+    User.findById(req.auth._id, (err, user)=> {
+        if(err||!user){
+            return res.status(403).json({
+                errors: {
+                    auth: "You are not Authorized!"
+                }
+            })
         }
-        return res.json(match);
+        else {
+            Match.find( { $or: [ {user1_id: user}, {user2_id: user } ], match_time: {$gte: new Date(Date.now())}  }, (err, match) =>{
+                var markedDates = {}
+
+
+                console.log(match[0].match_time)
+                const year = match[0].match_time.getFullYear();
+                const month = match[0].match_time.getMonth()+1;
+                console.log(month)
+
+                const date = match[0].match_time.getDate();
+                const fulldate = year+ "-" +month + "-"+ date
+
+                markedDates[fulldate] = {marked :true, selected:true, matches: [match[0]]};
+
+
+
+                return res.json({markedDates:markedDates})
+            })
+
+        }
     })
+
 }
 
 exports.matchesWon = (req, res) => {

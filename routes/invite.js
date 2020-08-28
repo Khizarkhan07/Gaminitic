@@ -11,7 +11,7 @@ router.post("/send_invite", requireSignin, sendInvite);
 router.get("/user_invites/:userId",requireSignin ,pendingInvites);
 
 router.put("/accept_invite",requireSignin ,acceptInvites);
-router.get("/upcoming_matches/:userId",requireSignin ,upcoming);
+router.get("/upcoming_matches/",requireSignin ,upcoming);
 router.get("/matches_won/:userId", requireSignin ,matchesWon);
 router.get("/matches_lost/:userId", requireSignin ,matcheslost);
 router.get("/disputes/:userId", requireSignin ,disputes);
