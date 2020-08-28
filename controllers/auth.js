@@ -299,7 +299,7 @@ exports.signin =  (req, res) => {
 
         return res.json({
             success: true,
-            user: {_id, name , email, token, userName:username, userNumber:user_number, photo: "https://www.gaminatic.hexaadev.com"+photo, psnTag: psn_tag
+            user: {_id, name , email, token, userName:username, userNumber:user_number, photo: photo, psnTag: psn_tag
                 , xboxTag:xbox_tag, coins, wallet}
         });
     });
