@@ -159,9 +159,10 @@ exports.upcoming = (req, res) => {
 
                 for (var i=0; i< match.length; i++){
                     const year = match[i].match_time.getFullYear();
-                    const month = match[i].match_time.getMonth()+1;
+                    const month = match[i].match_time.getMonth();
                     const date = match[i].match_time.getDate();
                     var fulldate = year+ "-" +month + "-"+ date
+
                     fulldate = fulldate.toString()
                     console.log(fulldate)
                     if(markedDates[fulldate] === undefined){
