@@ -17,6 +17,25 @@ exports.userById = (req, res, next, id)=> {
         });
 };
 
+exports.userProfile = (req, res)=> {
+    User.findById(req.auth._id, (err, user)=> {
+        if(err||!user){
+            return res.status(403).json({
+                errors: {
+                    auth: "You are not Authorized!"
+                }
+            })
+        }
+        else {
+            const {_id, name, email, username, user_number, photo, psn_tag, xbox_tag, coins, wallet}= user;
+            return res.json({
+                success: true,
+                user: {_id, name , email, userName:username, userNumber:user_number, photo: "https://www.gaminatic.hexaadev.com"+photo , psnTag: psn_tag
+                    , xboxTag:xbox_tag, coins, wallet}
+            });
+        }
+    })
+}
 
 exports.getuser = (req, res)=>{
     req.profile.hashed_password = undefined;
