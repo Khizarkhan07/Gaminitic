@@ -18,6 +18,9 @@ const games = new moongose.Schema({
         type: Date,
         default: Date.now
     },
+    photo: {
+        type:String
+    }
 
 });
 module.exports= moongose.model("game", games);

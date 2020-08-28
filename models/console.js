@@ -8,6 +8,8 @@ const console = new moongose.Schema({
         type: Date,
         default: Date.now
     },
-
+    photo: {
+        type:String
+    }
 });
 module.exports= moongose.model("console", console);

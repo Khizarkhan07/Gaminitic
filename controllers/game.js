@@ -26,7 +26,7 @@ exports.createGame = async (req, res) => {
     let game = new Game();
     game.name = req.body.name;
 
-    const dif = ["rookie", "moderate", "hard"]
+    /*const dif = ["rookie", "moderate", "hard"]
     req.body.difficulties= dif;
 
     const len = ["5 mins", "15 mins", "30 mins"]
@@ -40,7 +40,7 @@ exports.createGame = async (req, res) => {
     for(var i=0; i<req.body.lengths.length; i++){
         game.lengths[i]= req.body.lengths[i];
     }
-
+*/
     game.save((err, result)=> {
         if(err||!result){
             return res.json({error: "Could not create game"})
