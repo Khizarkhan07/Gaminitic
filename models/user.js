@@ -103,7 +103,14 @@ var UserSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "block_history"
     }],
-
+    coins: {
+        type: Number,
+        default: 0
+    },
+    wallet: {
+        type: Number,
+        default: 0
+    }
     }
 );
 

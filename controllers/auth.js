@@ -46,7 +46,12 @@ exports.signupOtp = async (req, res) => {
                     from: '+19097841248',
                     to: user_number
                 })
-                .then(message => res.json({message}));
+                .then(message => res.json({message}))
+                .catch(e=> res.status(400).json({
+                    errors: {
+                        user_number: "Invalid Phone Number"
+                    }
+                }));
 
         }
     })
@@ -145,11 +150,12 @@ exports.signup = async (req, res, next)=>{
 
                         res.cookie("t", token, {expire: Date.now()+999});
 
-                        const {_id, name, email}= user;
+                        const {id, name, email, username, user_number, photo, psn_tag, xbox_tag, coins, wallet}= user;
 
                         return res.json({
                             success: true,
-                            user: {_id, name , email, token}
+                            user: {id, name , email, token, userName:username, userNumber:user_number, photo, psnTag: psn_tag
+                                , xboxTag:xbox_tag, coins, wallet}
                         });
                     }
                 })
@@ -289,11 +295,12 @@ exports.signin =  (req, res) => {
 
         res.cookie("t", token, {expire: Date.now()+999});
 
-        const {_id, name, email}= user;
+        const {id, name, email, username, user_number, photo, psn_tag, xbox_tag, coins, wallet}= user;
 
         return res.json({
             success: true,
-            user: {_id, name , email, token}
+            user: {id, name , email, token, userName:username, userNumber:user_number, photo, psnTag: psn_tag
+                , xboxTag:xbox_tag, coins, wallet}
         });
     });
 }
