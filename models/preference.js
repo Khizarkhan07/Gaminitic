@@ -1,15 +1,15 @@
 const moongose = require ("mongoose");
 
 const preferences = new moongose.Schema({
-    user_id: {
+    userId: {
         type: moongose.Schema.ObjectId,
         ref: "user"
     },
-    game_id: {
+    selectedGame: {
         type: moongose.Schema.ObjectId,
         ref: "game"
     },
-    console_id : {
+    selectedConsole : {
         type: moongose.Schema.ObjectId,
         ref: "console"
     },

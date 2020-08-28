@@ -71,7 +71,7 @@ exports.allPrefrences = (req, res)=> {
             })
         }
         else {
-            Preference.find({user_id:user}, (err, prefs)=> {
+            Preference.find({userId:user}, (err, prefs)=> {
                 if(err){
                     return res.status(400).json({
                         errors: {
@@ -82,7 +82,7 @@ exports.allPrefrences = (req, res)=> {
                 else {
                     return res.json({allPreference: prefs})
                 }
-            }).populate('console_id', 'name photo').populate('game_id', 'name photo')
+            }).populate('selectedConsole', 'name photo').populate('selectedGame', 'name photo')
         }
     })
 }
