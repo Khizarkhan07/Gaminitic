@@ -159,7 +159,10 @@ exports.upcoming = (req, res) => {
 
                 for (var i=0; i< match.length; i++){
                     const year = match[i].match_time.getFullYear();
-                    const month = match[i].match_time.getMonth();
+                    var month = match[i].match_time.getMonth();
+                    if(month<10){
+                        month= "0"+ month
+                    }
                     const date = match[i].match_time.getDate();
                     var fulldate = year+ "-" +month + "-"+ date
 
