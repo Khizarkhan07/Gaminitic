@@ -27,12 +27,6 @@ const userValidationRules = () => {
     }),
 
     body("password", "password is required").notEmpty(),
-    body("password").isLength({
-        min: 6
-    })
-        .withMessage("Password must be atlest 6 chracrters long")
-        .matches(/\d/)
-        .withMessage("Password must contain atleast one digit"),
 
 ]
 }

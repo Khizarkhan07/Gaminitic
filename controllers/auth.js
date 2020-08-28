@@ -292,7 +292,7 @@ exports.verifyLink = (req, res) => {
 
 
 exports.signin =  (req, res) => {
-    if(req.body.email){
+    if(req.body.email_or_phone){
         req.body.email_or_phone= req.body.email_or_phone.toLowerCase();
     }
     console.log(req.body.email_or_phone)
