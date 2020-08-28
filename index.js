@@ -12,9 +12,8 @@ const http = require("http").Server(app);
 var fs = require('fs'); // required for file serving
 app.use(express.static('assets'));
 
-//app.use(express.static(__dirname + "/public"));
-
 app.use(express.static(path.join(__dirname, '/views')))
+
 app.engine('hbs', exphbs({
     defaultLayout: 'main',
     extname: '.hbs',
@@ -55,7 +54,7 @@ app.use(cors());
 app.use('/api/', authRoutes);
 app.use('/api/', userRoutes);
 app.use('/api/', connectionRoutes);
-app.use('/api/', adminRoutes);
+app.use('/', adminRoutes);
 app.use('/api/', scheduleRoutes);
 app.use('/api/', gameRoutes);
 app.use('/api/', inviteRoutes);
