@@ -1,10 +1,9 @@
 const  express = require("express");
-const exphbs = require('express-handlebars');
+const exphbs = require('express-handlebars'); //required for handlebar views
 const path = require('path')
 const app = express();
 const mongoose = require("mongoose");
 const cookieparser = require("cookie-parser");
-const expressValidator = require("express-validator");
 const cors = require("cors");
 const bodyparser = require("body-parser");
 const http = require("http").Server(app);
