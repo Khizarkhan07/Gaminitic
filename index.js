@@ -10,10 +10,13 @@ const bodyparser = require("body-parser");
 const http = require("http").Server(app);
 
 var fs = require('fs'); // required for file serving
-app.use(express.static('assets'));
 
-app.use(express.static(path.join(__dirname, '/views')))
 
+app.use(express.static('assets')); //for serving images and assets
+
+app.use(express.static(path.join(__dirname, '/views'))) //for serving handlebars admin views
+
+//configuring handlebars
 app.engine('hbs', exphbs({
     defaultLayout: 'main',
     extname: '.hbs',
@@ -23,7 +26,7 @@ app.engine('hbs', exphbs({
 app.set('view engine', 'hbs');
 
 const port = 8080;
-
+//mongoose connection
 mongoose.connect('mongodb+srv://gaminatic:gaminatic@gaminatic.mus8o.mongodb.net/gaminatic?retryWrites=true&w=majority' , { useNewUrlParser: true, useUnifiedTopology: true } );
 
 //Routes
@@ -37,18 +40,10 @@ const inviteRoutes = require("./routes/invite");
 const chatRoutes = require("./routes/chat");
 const preferenceRoutes = require("./routes/prefernce");
 
-const Chat = require("./models/chat");
-const Message = require("./models/message");
-const User = require("./models/user");
-const Group = require("./models/group");
-const GroupMessage = require("./models/groupMessage");
-
-
-
+//setting middlewares
 app.use(bodyparser.json());
 app.use(cookieparser());
 app.use(cors());
-
 
 
 app.use('/api/', authRoutes);
@@ -63,7 +58,7 @@ app.use('/api/', preferenceRoutes);
 
 
 
-
+//exporting for usage in sockets.js
 exports.http =http
 
 require("./controllers/socket")
