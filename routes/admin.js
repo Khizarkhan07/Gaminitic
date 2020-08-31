@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const {adminSignin, allusers, hasbothPermission ,hasPermission, assignRole, changeStatus, resloveDispute, disputes, getDispute, isSignedin, getUser ,forgotPassword} = require("../controllers/admin");
+const {adminSignin, allusers, hasbothPermission ,hasPermission, setInviteLimit, getConfig ,assignRole, changeStatus, resloveDispute, disputes, getDispute, isSignedin, getUser ,forgotPassword} = require("../controllers/admin");
 const {requireSignin} = require("../controllers/auth");
 const {matchById} = require("../controllers/invite");
 const {userById} = require("../controllers/user");
@@ -21,7 +21,9 @@ router.post("/admin_signin" , adminSignin);
 
 router.get("/users" ,hasbothPermission ,allusers)
 router.get("/user/:userId",  hasbothPermission ,getUser)
+router.get("/config/",  hasbothPermission ,getConfig)
 router.post("/assign_role",  hasPermission , assignRole)
+router.post("/set_limit" , setInviteLimit)
 
 router.get("/disputes",  disputes)
 router.get("/disputes/:matchId", hasPermission , getDispute)

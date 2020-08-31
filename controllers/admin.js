@@ -1,6 +1,7 @@
 const _ = require("lodash");
 const  User = require("../models/user");
 const  Match = require("../models/match");
+const  Config = require("../models/configuration");
 const formidable = require('formidable')
 const jwt = require("jsonwebtoken");
 require('dotenv').config()
@@ -391,6 +392,12 @@ exports.getUser = (req, res)=> {
     res.render('singleUser',{user:req.profile})
 }
 
+exports.getConfig = (req, res)=> {
+    Config.find({}, (err, result)=> {
+
+       res.render('configuration', {config:result[0]})
+    }).lean()
+}
 
 exports.forgotPassword = (req, res) => {
 
@@ -451,3 +458,27 @@ exports.forgotPassword = (req, res) => {
 
 
 };
+
+exports.setInviteLimit = (req, res) => {
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+
+    form.parse(req, (err, fields)=> {
+        const {configId, inviteLimit} = fields;
+
+        Config.findById(configId, (err, config)=> {
+            if(err || !config){
+                return res.json({error: "No config found"})
+            }
+            else {
+                config.inviteLimit = inviteLimit;
+                config.save((err, result)=> {
+                    return res.json (result)
+                })
+            }
+        })
+
+    });
+
+
+}

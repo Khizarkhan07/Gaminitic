@@ -62,7 +62,7 @@ exports.sendInvite = (req, res) => {
 
                                 invite.match_time = new Date(req.body.match_time + minutes*6000);
 */
-                                invite.match_time = new Date(req.body.match_time);
+                                invite.match_time = new Date(Date.now());
                                 invite.save((err, invitation)=> {
                                     if(err || !invitation){
                                         return res.json ({error: "Could not find sender, invalid senderId"})

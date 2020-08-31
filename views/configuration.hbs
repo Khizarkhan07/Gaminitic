@@ -1,0 +1,66 @@
+
+<div class="content-header row" style="margin: 10px;">
+    <div class="content-header-left col-md-6 col-12 mb-2">
+        <h3 class="content-header-title">
+            View admin</h3>
+        <div class="row breadcrumbs-top">
+            <div class="breadcrumb-wrapper col-12">
+                <ol id="crumbs" class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="">Home</a>
+                    </li>
+
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="
+    padding: 10px;
+    margin: 20px;
+    background-color: #f8f9fa!important;
+    border-bottom: 1px solid #dee2e6!important;
+    ">
+
+
+    <div style="height: 100%" class="container">
+        <div>
+            <h5>Invite limit</h5>
+            <hr>
+            <form action="http://localhost:8080/set_limit/" method="POST" >
+                <input type="hidden" value="{{config._id}}" name="configId"/>
+                <label for="sel1">Limit (months): <b> {{config.inviteLimit}} month(s) currently</b></label>
+
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <select class="form-control" name="inviteLimit" required>
+
+                            <option value=1>1</option>
+                            <option value=2>2</option>
+                            <option value=3>3</option>
+                            <option value=4>4</option>
+                            <option value=5>5</option>
+                            <option value=6>6</option>
+                            <option value=7>7</option>
+                            <option value=8>8</option>
+                            <option value=9>9</option>
+                            <option value=10>10</option>
+                            <option value=11>11</option>
+                            <option value=12>12</option>
+
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button  class="btn btn-danger" type="submit">
+                            Set limit
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
