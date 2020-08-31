@@ -14,8 +14,9 @@ const {signup,
     resetPasswordSecurity, signupOtp, verifyNumber ,requireSignin } = require("../controllers/auth");
 const {validate, userValidationRules, passwordlidationRules, securityvalidationRules} = require("../validator/index")
 
-router.post("/register", userValidationRules(), validate ,signup);
+
 router.post("/phone_register",signupOtp);
+router.post("/register", userValidationRules(), validate ,signup);
 router.post("/phone_verify",verifyNumber);
 router.put("/verify-account" ,verifyLink);
 router.post("/signin" ,signin);

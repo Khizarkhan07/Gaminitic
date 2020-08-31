@@ -11,10 +11,13 @@ const client = require('twilio')(accountSid, authToken);
 const requestIp = require('request-ip');
 
 
-
+// to register phone number in temporary table and
+//send otp
 exports.signupOtp = async (req, res) => {
     const user_number = req.body.user_number;
     console.log(user_number);
+
+    //checking if user with phone number already exists
 
     const numberExists = await User.findOne({user_number: req.body.user_number});
     if (numberExists) {
@@ -24,7 +27,10 @@ exports.signupOtp = async (req, res) => {
             }
         })
     }
-    console.log(process.env.environment)
+
+    //check for the enviornment, if local send 0000 otp
+    // for testing purpose.
+
     if(process.env.enviornment = 'local'){
         console.log("here")
         const temp_user = await new Temp_user(req.body);
@@ -47,6 +53,7 @@ exports.signupOtp = async (req, res) => {
             }
         })
     }
+    //if enviornment is not local use twilio to send otp
     else {
         // generate a otp
         const otp = (Math.floor(100000 + Math.random() * 900000));
@@ -83,10 +90,12 @@ exports.signupOtp = async (req, res) => {
 
 }
 
+// to verify otp and progress to signup.
 
 exports.verifyNumber =  (req, res) => {
     const otp= req.body.otp;
 
+    //verify phone number with otp
     Temp_user.findOne({otp}, (err, user)=>{
         if(err || !user){
             return res.status(400).json({
@@ -96,6 +105,7 @@ exports.verifyNumber =  (req, res) => {
             })
         }
 
+        //update otp to null once it is verified
         return user.updateOne({ otp: "" }, (err, success) => {
             if (err) {
                 return res.jstatus(400).json({
@@ -114,7 +124,14 @@ exports.verifyNumber =  (req, res) => {
 
 
 
+//to signup after otp is verified
+//create an actual document of user in the application
+//with same phone number
+
 exports.signup = async (req, res, next)=>{
+
+    //check user with phone number already exist in verified phone numbers
+    // if not, cannot progress to signup
 
     const numberExists = await Temp_user.findOne({user_number:req.body.user_number});
         if (!numberExists){
@@ -126,12 +143,15 @@ exports.signup = async (req, res, next)=>{
             });
         }
         else {
-
+            //storing ip address of user
             const ipAddress = requestIp.getClientIp(req);
             req.body.ipAddress = ipAddress;
             console.log(ipAddress)
+
             req.body.email=req.body.email.toLowerCase();
             console.log(req.body.username);
+
+            //check for username
             const usernameExists = await User.findOne({username:req.body.username});
             if(usernameExists){
                 console.log("here")
@@ -142,6 +162,7 @@ exports.signup = async (req, res, next)=>{
                 });
             }
 
+            //check for existing email
             const userExists = await User.findOne({email:req.body.email});
             if(userExists){
                 return res.status(400).json({
@@ -151,6 +172,8 @@ exports.signup = async (req, res, next)=>{
                 });
             }
             else {
+                //creating user
+
                 let user = await new User(req.body)
                 user.ipAddress = ipAddress;
 
@@ -163,6 +186,11 @@ exports.signup = async (req, res, next)=>{
                         })
                     }
                     else {
+
+
+                        //removing phone number from temporary table
+                        //once the signup is completed
+
                         Temp_user.remove({user_number:req.body.user_number}, (err, result)=> {
                             if(err){
                                 console.log(err);
@@ -170,7 +198,7 @@ exports.signup = async (req, res, next)=>{
                             console.log("deleted")
                         });
 
-                        /*verifyAccount(req, res);*/
+                        // creating jwt token with user id
                         const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
 
                         res.cookie("t", token, {expire: Date.now()+999});
@@ -184,39 +212,13 @@ exports.signup = async (req, res, next)=>{
                         });
                     }
                 })
-
-
-                /*User.findOne({user_number:req.body.user_number} ,(err, user)=> {
-                    user.ipAddress = ipAddress;
-                    user.name = req.body.name;
-                    user.username = req.body.username;
-                    user.email = req.body.email;
-                    user.password= req.body.password;
-                    if(req.body.psn_tag){
-                        user.psn_tag= req.body.psn_tag
-                    }
-                    if(req.body.xbox_tag){
-                        user.xbox_tag= req.body.xbox_tag
-                    }
-                    if(req.body.is_public){
-                        user.is_public = true;
-                    }
-                    else {
-                        user.is_public = false;
-                    }
-                    user.save((err, user)=> {
-                        verifyAccount(req, res);
-
-                    });
-
-
-                })*/
             }
 
 
         }
 };
 
+//send verification email to user
 
 verifyAccount = (req, res) => {
 
@@ -249,10 +251,12 @@ verifyAccount = (req, res) => {
             }/verify-account/${token}</p>`
         };
 
+        //store verification link in db against the user
         return user.updateOne({ verifyAccountLink: token }, (err, success) => {
             if (err) {
                 return res.status(400).json({ message: err });
             } else {
+                //helper method to send email
                 sendEmail(emailData);
                 res.json({message: "sign up success"})
             }
@@ -261,8 +265,13 @@ verifyAccount = (req, res) => {
 
 };
 
+
+//verify user when user clicks on verification link
+
 exports.verifyLink = (req, res) => {
     const { verifyAccountLink } = req.body;
+
+    //find user with verification link
     User.findOne({ verifyAccountLink }, (err, user) => {
         // if err or no user
         if (err || !user)
@@ -270,11 +279,13 @@ exports.verifyLink = (req, res) => {
                 error: "Invalid Link!"
             });
 
+        //if user found update fields
         const updatedFields = {
             verifyAccountLink: "",
             is_activated: true
         };
 
+        //update user
         user = _.extend(user, updatedFields);
         user.updated = Date.now();
         user.save((err, result) => {
@@ -291,13 +302,19 @@ exports.verifyLink = (req, res) => {
 };
 
 
+// to sign in with email or phone
 exports.signin =  (req, res) => {
+
+    //converting to lower case to remove sensitivity
+
     if(req.body.email_or_phone){
         req.body.email_or_phone= req.body.email_or_phone.toLowerCase();
     }
-    console.log(req.body.email_or_phone)
+
+
     const {email_or_phone , password} = req.body;
 
+    //find user with email or phone
     User.findOne({ $or: [ { email: email_or_phone }, { user_number: email_or_phone } ] }, (err, user)=>{
         if(err || !user){
             return res.status(400).json({
@@ -307,6 +324,10 @@ exports.signin =  (req, res) => {
                 }
             })
         }
+
+        //if password doesnot match
+        //authenticate: a virtual method for users model to bycrypt password
+
         if (!user.authenticate(password)){
             return res.status(400).json({
                 errors: {
@@ -316,6 +337,24 @@ exports.signin =  (req, res) => {
             })
         }
 
+        //update user timezone variables:
+
+        user.abv = req.body.abv;
+        user.timeZone =  req.body.timeZone;
+        user.offset = req.body.offset;
+        user.isDst = req.body.isDst;
+
+        user.save((err, saved)=> {
+            if(err|| !saved){
+                return res.status(400).json ( {
+                    errors: {
+                       time: "Time variables not updated"
+                    }
+                })
+            }
+        })
+
+        //create token if user is signed in
         const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
 
         res.cookie("t", token, {expire: Date.now()+999});
@@ -338,6 +377,9 @@ exports.signout = (req, res)=> {
     return res.json({message: "Signout successfull"});
 }
 
+
+//middleware method to check jwt token and authenticate
+
 exports.requireSignin = expressjwt({
     secret: process.env.JWT_SECRET,
     userProperty: "auth",
@@ -345,6 +387,7 @@ exports.requireSignin = expressjwt({
 });
 
 
+//api for otp login, sends otp to number if number exists : not integrated
 
 exports.sendOtp = (req, res) => {
     const user_number = req.body.user_number;
@@ -379,6 +422,7 @@ exports.sendOtp = (req, res) => {
 
 }
 
+//enter otp to login : not integrated
 
 exports.Otpsignin =  (req, res) => {
     const otp= req.body.otp;
@@ -390,10 +434,15 @@ exports.Otpsignin =  (req, res) => {
             })
         }
 
+        //update user otp to empty once verified
+
         return user.updateOne({ otp: "" }, (err, success) => {
             if (err) {
                 return res.status(400).json({ error: err });
             } else {
+
+                //return token once verification is done to logib the user
+
                 const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
 
                 res.cookie("t", token, {expire: Date.now()+999});
@@ -406,6 +455,9 @@ exports.Otpsignin =  (req, res) => {
 
     });
 }
+
+
+//send password recovery email to email: not integrated
 
 exports.forgotPassword = (req, res) => {
     if (!req.body) return res.status(400).json({ message: "No request body" });
