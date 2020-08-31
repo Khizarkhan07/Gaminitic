@@ -7,6 +7,7 @@ const _ = require('lodash')
 const formidable = require('formidable')
 const fs = require("fs");
 
+//find match by id
 exports.matchById = (req, res, next, id)=> {
     Match.findById(id).lean()
         .populate("user1_id", "name")
@@ -26,6 +27,8 @@ exports.matchById = (req, res, next, id)=> {
 };
 
 
+//send match invite to user if not blocked
+
 exports.sendInvite = (req, res) => {
     const {sender_id, receiver_id, game_id} = req.body;
 
@@ -35,6 +38,7 @@ exports.sendInvite = (req, res) => {
         }
         else{
             User.findById(receiver_id)
+                //finding blocked user
                 .populate({
                     path: 'blocked_users',
                     match: { unblocked: false},
@@ -145,8 +149,11 @@ exports.acceptInvites = (req, res)=> {
     })
 }
 
+
+//api to mark user calender with upcoming matches.
 exports.upcoming = (req, res) => {
 
+    //find user with id if logged in
     User.findById(req.auth._id, (err, user)=> {
         if(err||!user){
             return res.status(403).json({
@@ -156,9 +163,15 @@ exports.upcoming = (req, res) => {
             })
         }
         else {
+
+            //find user upcoming matches
+
             Match.find( { $or: [ {user1_id: user}, {user2_id: user } ], match_time: {$gte: new Date(Date.now())}  }, (err, match) =>{
-                var markedDates = {
-                }
+                var markedDates = {}
+
+                //for every match extract match date from time-stamp
+                //append them in the marked object with extracted date as key.
+                //push matches on each date under the date key (number of matches on a date)
 
                 for (var i=0; i< match.length; i++){
                     const year = match[i].match_time.getFullYear();

@@ -507,9 +507,13 @@ exports.forgotPassword = (req, res) => {
     });
 };
 
+
+//to reset passwork when link is clicked
+
 exports.resetPassword = (req, res) => {
     const { resetPasswordLink, newPassword } = req.body;
 
+    //find user with the reset link
     User.findOne({ resetPasswordLink }, (err, user) => {
         // if err or no user
         if (err || !user)
@@ -517,6 +521,7 @@ exports.resetPassword = (req, res) => {
                 error: "Invalid Link!"
             });
 
+        //update password
         const updatedFields = {
             password: newPassword,
             resetPasswordLink: ""
@@ -538,6 +543,8 @@ exports.resetPassword = (req, res) => {
     });
 };
 
+
+//set security question for password reset
 
 exports.setQuestion = (req, res) => {
     const {security_question, security_answer } = req.body;
@@ -572,6 +579,9 @@ exports.setQuestion = (req, res) => {
     });
 };
 
+//get question of a specific user
+// to rest password : not integrated
+
 exports.getQuestion = (req, res) => {
     const {user_number} = req.body;
 
@@ -587,6 +597,7 @@ exports.getQuestion = (req, res) => {
     }).select("security_question user_number");
 };
 
+//check answer of a question pf a specific user: not integrated
 exports.checkAnswer = (req, res) => {
     const {user_number, security_question, security_answer} = req.body;
     console.log(user_number)
@@ -623,6 +634,7 @@ exports.checkAnswer = (req, res) => {
     }).select("security_question security_answer user_number");
 };
 
+//reset password if security question is answered: not integrated
 exports.resetPasswordSecurity = (req, res) => {
     const { user_number , newPassword , security_question, security_answer} = req.body;
 

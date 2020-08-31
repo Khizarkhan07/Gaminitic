@@ -5,7 +5,7 @@ const formidable = require("formidable");
 
 exports.setschedule = (req, res) => {
     console.log("here")
-
+    //find user if logged in
     User.findById(req.auth._id, (err, user)=> {
         if(err||!user){
             return res.status(403).json({
@@ -16,9 +16,13 @@ exports.setschedule = (req, res) => {
         }
         else {
             Schedule.findOne({user_id: user}, (err, schedule)=> {
+                //if schedule already exist
+                //update the schedule
                 if(schedule){
 
-                    //req.body.slots = [new Date(Date.now())]
+
+                    //check if set all days switch is on
+                    //if yes, set same slots for all days
                     if(req.body.setAll){
                         for (var i =0; i<req.body.slots.length; i++){
                             schedule.monday[i] = req.body.slots[i];
@@ -31,48 +35,49 @@ exports.setschedule = (req, res) => {
                         }
                     }
 
+                    else{
 
-                    //hardoced for testing purposes
+                        //check for each day switch and set slot for that day
+                        if(req.body.monday){
 
-                    if(req.body.monday){
+                            for (var i =0; i<req.body.slots.length; i++){
+                                schedule.monday[i] = req.body.slots[i];
+                            }
+                        }
 
-                        for (var i =0; i<req.body.slots.length; i++){
-                            schedule.monday[i] = req.body.slots[i];
+                        if(req.body.tuesday){
+                            for (var i =0; i<req.body.slots.length; i++){
+                                schedule.tuesday[i] = req.body.slots[i];
+                            }
+                        }
+                        if(req.body.wednesday){
+                            for (var i =0; i<req.body.slots.length; i++){
+                                schedule.wednesday[i] = req.body.slots[i];
+                            }
+                        }
+                        if(req.body.thursday){
+                            for (var i =0; i<req.body.slots.length; i++){
+                                schedule.thursday[i] = req.body.slots[i]  ;
+                            }
+                        }
+                        if(req.body.friday){
+                            for (var i =0; i<req.body.slots.length; i++){
+                                schedule.friday[i] = req.body.slots[i]  ;
+                            }
+                        }
+                        if(req.body.saturday){
+                            for (var i =0; i<req.body.slots.length; i++){
+                                schedule.saturday[i] = req.body.slots[i]  ;
+                            }
+                        }
+                        if(req.body.sunday){
+                            for (var i =0; i<req.body.slots.length; i++){
+                                schedule.sunday[i] = req.body.slots[i]  ;
+                            }
                         }
                     }
 
-                    if(req.body.tuesday){
-                        for (var i =0; i<req.body.slots.length; i++){
-                            schedule.tuesday[i] = req.body.slots[i];
-                        }
-                    }
-                    if(req.body.wednesday){
-                        for (var i =0; i<req.body.slots.length; i++){
-                            schedule.wednesday[i] = req.body.slots[i];
-                        }
-                    }
-                    if(req.body.thursday){
-                        for (var i =0; i<req.body.slots.length; i++){
-                            schedule.thursday[i] = req.body.slots[i]  ;
-                        }
-                    }
-                    if(req.body.friday){
-                        for (var i =0; i<req.body.slots.length; i++){
-                            schedule.friday[i] = req.body.slots[i]  ;
-                        }
-                    }
-                    if(req.body.saturday){
-                        for (var i =0; i<req.body.slots.length; i++){
-                            schedule.saturday[i] = req.body.slots[i]  ;
-                        }
-                    }
-                    if(req.body.sunday){
-                        for (var i =0; i<req.body.slots.length; i++){
-                            schedule.sunday[i] = req.body.slots[i]  ;
-                        }
-                    }
-
-
+                    //save schedule
                     schedule.save((err, schedule)=> {
                         if(err|| !schedule){
                             return res.json({

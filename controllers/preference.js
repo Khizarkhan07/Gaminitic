@@ -3,6 +3,7 @@ const Console = require("../models/console");
 const Preference = require("../models/preference");
 const User = require("../models/user");
 
+//find preference by id and append to req object
 exports.prefById = (req, res, next, id)=> {
     Preference.findById(id)
         .exec((err, pref)=>{
@@ -19,8 +20,10 @@ exports.prefById = (req, res, next, id)=> {
 };
 
 
-
+//set prefernce of console/games and rules
 exports.set_preference = (req, res) => {
+
+    //do update if body contains a preferenceId
     if(req.body.preferenceId) {
         Preference.findById(req.body.preferenceId, (err, pref)=> {
             if(err||!pref){
@@ -31,6 +34,8 @@ exports.set_preference = (req, res) => {
                 })
             }
             else {
+                //check to see if user is updating his own preference
+
                 if(pref.userId._id != req.auth._id){
                     return res.status(403).json({
                         errors: {
@@ -39,7 +44,7 @@ exports.set_preference = (req, res) => {
                     })
                 }
                 else {
-                    const {selectedGame, selectedConsole, difficulty, length} = req.body
+                    const {selectedGame, selectedConsole} = req.body
 
                     Console.findById(selectedConsole, (err, console)=> {
                         if(err||!console){
@@ -86,6 +91,8 @@ exports.set_preference = (req, res) => {
             }
         })
     }
+
+    //create a new preference if body doesnot contain a preferenceId
     else {
         const {selectedGame, selectedConsole, difficulty, length} = req.body
         console.log(req.auth._id)
@@ -144,6 +151,7 @@ exports.set_preference = (req, res) => {
     }
 }
 
+//find preferences of a specific user
 exports.allPrefrences = (req, res)=> {
     User.findById(req.auth._id, (err, user)=> {
         if(err||!user){
@@ -170,6 +178,8 @@ exports.allPrefrences = (req, res)=> {
     })
 }
 
+
+//delete preference of a user
 exports.deletePreference = (req, res)=> {
     if(req.auth._id != req.pref.userId){
         return res.status(403).json({
