@@ -36,7 +36,7 @@ exports.sendInvite = (req, res) => {
         if(err){
             return res.status(400).json({
                 errors: {
-                    configuration: "error finifng configurations"
+                    configuration: "error finding configurations"
                 }
             })
         }

@@ -7,9 +7,14 @@ const {http} = require("../index")
 
 const socket = require("socket.io")(http);
 
+
+const userSocketIdMap = new Map(); //a map of online usernames and their clients
+
 socket.on("connection", socket => {
     console.log("user connected");
 
+    addClientToMap('khizar', socket.id);
+    console.log(userSocketIdMap)
     /*fs.readFile(__dirname + '/assets/images/image.jpg', function(err, buf){
         // it's possible to embed binary data
         // within arbitrarily-complex objects
@@ -19,6 +24,7 @@ socket.on("connection", socket => {
 
     socket.on("disconnect", function() {
         console.log("user disconnected");
+        removeClientFromMap(userName, socket.id);
     });
 
     socket.on('base64 file', function (msg) {
@@ -248,5 +254,28 @@ socket.on("connection", socket => {
         })
     })
 });
+
+function addClientToMap(userName, socketId){
+    if (!userSocketIdMap.has(userName)) {
+//when user is joining first time
+        userSocketIdMap.set(userName, new Set([socketId]));
+    } else{
+//user had already joined from one client and now joining using another
+        client
+        userSocketIdMap.get(userName).add(socketId);
+    }
+}
+
+function removeClientFromMap(userName, socketId){
+    if (userSocketIdMap.has(userName)) {
+        let userSocketIdSet = userSocketIdMap.get(userName);
+        userSocketIdSet.delete(socketID);
+//if there are no clients for a user, remove that user from online
+        list (map)
+        if (userSocketIdSet.size ==0 ) {
+            userSocketIdMap.delete(userName);
+        }
+    }
+}
 
 module.exports = socket;
