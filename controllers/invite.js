@@ -1,8 +1,8 @@
 const User = require("../models/user");
 const Game = require("../models/game");
-const Block = require("../models/block_history");
 const Invite = require("../models/invite")
 const Match = require("../models/match")
+const Config = require("../models/configuration")
 const _ = require('lodash')
 const formidable = require('formidable')
 const fs = require("fs");
@@ -32,63 +32,89 @@ exports.matchById = (req, res, next, id)=> {
 exports.sendInvite = (req, res) => {
     const {sender_id, receiver_id, game_id} = req.body;
 
-    Game.findById(game_id, (err, game)=> {
-        if(err||!game){
-            return res.json ({error: "game does not exists"})
+    Config.find({}, (err, config)=> {
+        if(err){
+            return res.status(400).json({
+                errors: {
+                    configuration: "error finifng configurations"
+                }
+            })
         }
         else{
-            User.findById(receiver_id)
-                //finding blocked user
-                .populate({
-                    path: 'blocked_users',
-                    match: { unblocked: false},
-                    populate: {
-                        path:'user_blocked',
-                        match: { _id: sender_id},
+
+            var monthdiff = (monthDiff(new Date(Date.now()), new Date("2021-09-12T07:54:01.578+00:00")))
+
+            if(monthdiff>config[0].inviteLimit){
+                return res.status(400).json({
+                    errors: {
+                        inviteLimit: "You invitation date exceeds the limit"
                     }
                 })
-                .exec((err, user)=>{
-                    if(user.blocked_users.length !=0){
-                        return res.json ({error: "You are blocked by the user can't send invites"})
+            }
+            else {
+
+                Game.findById(game_id, (err, game)=> {
+                    if(err||!game){
+                        return res.json ({error: "game does not exists"})
                     }
-                    else {
-                        User.findById(sender_id, (err, sender)=> {
-                            if(err|| !sender){
-                                return res.json ({error: "Could not find sender, invalid senderId"})
-                            }
-                            else {
-                                let invite = new Invite();
-                                invite.game_id = game;
-                                invite.sender_id = sender;
-                                invite.receiver_id = user;
+                    else{
+                        User.findById(receiver_id)
+                            //finding blocked user
+                            .populate({
+                                path: 'blocked_users',
+                                match: { unblocked: false},
+                                populate: {
+                                    path:'user_blocked',
+                                    match: { _id: sender_id},
+                                }
+                            })
+                            .exec((err, user)=>{
+                                if(user.blocked_users.length !=0){
+                                    return res.json ({error: "You are blocked by the user can't send invites"})
+                                }
+                                else {
+                                    User.findById(sender_id, (err, sender)=> {
+                                        if(err|| !sender){
+                                            return res.json ({error: "Could not find sender, invalid senderId"})
+                                        }
+                                        else {
+                                            let invite = new Invite();
+                                            invite.game_id = game;
+                                            invite.sender_id = sender;
+                                            invite.receiver_id = user;
 
 
-                                console.log("offset:", sender.offset);
-                                var hours = sender.offset/60;
-                                console.log("hours: ", hours)
-                                var minutes = hours*60;
-                                console.log("mints: ", minutes);
-                                var seconds = minutes*60000;
-                                console.log("seconds: ", seconds);
-                                console.log("time before : ", new Date(Date.now()));
-                                invite.match_time = new Date(Date.now() + seconds);
-                                console.log("time in utc",(invite.match_time));
+                                            console.log("offset:", sender.offset);
+                                            var hours = sender.offset/60;
+                                            console.log("hours: ", hours)
+                                            var minutes = hours*60;
+                                            console.log("mints: ", minutes);
+                                            var seconds = minutes*60000;
+                                            console.log("seconds: ", seconds);
+                                            console.log("time before : ", new Date(Date.now()));
+                                            invite.match_time = new Date(Date.now() + seconds);
+                                            console.log("time in utc",(invite.match_time));
 
-                                invite.save((err, invitation)=> {
-                                    if(err || !invitation){
-                                        return res.json ({error: "Could not find sender, invalid senderId"})
-                                    }
-                                    else {
-                                        return res.json (invitation);
 
-                                    }
-                                })
-                            }
-                        })
+                                            invite.save((err, invitation)=> {
+                                                if(err || !invitation){
+                                                    return res.json ({error: "Could not find sender, invalid senderId"})
+                                                }
+                                                else {
+                                                    return res.json (invitation);
+
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                            });
                     }
-                });
+                })
+            }
         }
     })
+
 }
 
 exports.pendingInvites =(req, res)=> {
@@ -382,3 +408,11 @@ exports.rejectProof = (req, res) => {
     time  =time + parseInt(seconds)
     console.log(time)
 }*/
+
+function monthDiff(d1, d2) {
+    var months;
+    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+    months -= d1.getMonth();
+    months += d2.getMonth();
+    return months <= 0 ? 0 : months;
+}
