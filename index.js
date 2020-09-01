@@ -24,6 +24,7 @@ app.engine('hbs', exphbs({
 
 app.set('view engine', 'hbs');
 
+
 const port = 8080;
 //mongoose connection
 mongoose.connect('mongodb+srv://gaminatic:gaminatic@gaminatic.mus8o.mongodb.net/gaminatic?retryWrites=true&w=majority' , { useNewUrlParser: true, useUnifiedTopology: true } );

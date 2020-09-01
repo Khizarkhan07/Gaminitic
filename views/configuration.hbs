@@ -6,7 +6,7 @@
         <div class="row breadcrumbs-top">
             <div class="breadcrumb-wrapper col-12">
                 <ol id="crumbs" class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="">Home</a>
+                    <li class="breadcrumb-item"><a href="/disputes">Home</a>
                     </li>
 
                 </ol>
@@ -31,11 +31,11 @@
                 <input type="hidden" value="{{config._id}}" name="configId"/>
                 <label for="sel1">Limit (months): <b> {{config.inviteLimit}} month(s) currently</b></label>
 
-
                 <div class="row">
                     <div class="col-md-8">
                         <select class="form-control" name="inviteLimit" required>
 
+                            <option value={{config.inviteLimit}}>{{config.inviteLimit}}</option>
                             <option value=1>1</option>
                             <option value=2>2</option>
                             <option value=3>3</option>
@@ -59,6 +59,8 @@
                 </div>
 
             </form>
+            <hr>
+            <h5>More Options</h5>
 
         </div>
     </div>
