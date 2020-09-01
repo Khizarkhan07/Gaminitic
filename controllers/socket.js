@@ -12,6 +12,7 @@ const userSocketIdMap = new Map(); //a map of online usernames and their clients
 
 socket.on("connection", socket => {
     console.log("user connected");
+    console.log( userSocketIdMap.keys())
 
     addClientToMap('khizar', socket.id);
     console.log(userSocketIdMap)
@@ -21,10 +22,10 @@ socket.on("connection", socket => {
         socket.emit('image', { image: true, buffer: buf });
         console.log('image file is initialized');
     });*/
-
+    socket.emit('online', Array.from(userSocketIdMap))
     socket.on("disconnect", function() {
         console.log("user disconnected");
-        removeClientFromMap(userName, socket.id);
+        removeClientFromMap('khizar', socket.id);
     });
 
     socket.on('base64 file', function (msg) {
@@ -261,7 +262,7 @@ function addClientToMap(userName, socketId){
         userSocketIdMap.set(userName, new Set([socketId]));
     } else{
 //user had already joined from one client and now joining using another
-        client
+
         userSocketIdMap.get(userName).add(socketId);
     }
 }
@@ -269,9 +270,9 @@ function addClientToMap(userName, socketId){
 function removeClientFromMap(userName, socketId){
     if (userSocketIdMap.has(userName)) {
         let userSocketIdSet = userSocketIdMap.get(userName);
-        userSocketIdSet.delete(socketID);
+        userSocketIdSet.delete(socketId);
 //if there are no clients for a user, remove that user from online
-        list (map)
+
         if (userSocketIdSet.size ==0 ) {
             userSocketIdMap.delete(userName);
         }

@@ -44,7 +44,21 @@ var messages = document.getElementById("messages");
     messages.appendChild(span).append("by " + "anonymous" + ": " + "just now");
     console.log("Hello bingo!");
   });
+
+  socket.on("online", data => {
+    console.log(data)
+    let li = document.createElement("li");
+    let span = document.createElement("span");
+    var messages = document.getElementById("messages");
+    messages.appendChild(li).append(data[0][0]);
+    messages.appendChild(span).append("by " + "anonymous" + ": " + "just now");
+    console.log("Hello bingo!");
+  });
+
 })();
+
+
+
 
 socket.on("image", function(image, buffer) {
   if(image)
@@ -56,6 +70,8 @@ socket.on("image", function(image, buffer) {
   }
 
 });
+
+
 
 // fetching initial chat messages from the database
 (function() {
