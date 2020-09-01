@@ -61,12 +61,19 @@ exports.sendInvite = (req, res) => {
                                 invite.game_id = game;
                                 invite.sender_id = sender;
                                 invite.receiver_id = user;
-                                /*console.log(user.utcOffset);
-                                var minutes = user.utcOffset/60;
 
-                                invite.match_time = new Date(req.body.match_time + minutes*6000);
-*/
-                                invite.match_time = new Date(Date.now());
+
+                                console.log("offset:", sender.offset);
+                                var hours = sender.offset/60;
+                                console.log("hours: ", hours)
+                                var minutes = hours*60;
+                                console.log("mints: ", minutes);
+                                var seconds = minutes*60000;
+                                console.log("seconds: ", seconds);
+                                console.log("time before : ", new Date(Date.now()));
+                                invite.match_time = new Date(Date.now() + seconds);
+                                console.log("time in utc",(invite.match_time));
+
                                 invite.save((err, invitation)=> {
                                     if(err || !invitation){
                                         return res.json ({error: "Could not find sender, invalid senderId"})
@@ -85,12 +92,27 @@ exports.sendInvite = (req, res) => {
 }
 
 exports.pendingInvites =(req, res)=> {
-    Invite.findOne({receiver_id: req.profile , status: false}, (err, invites)=> {
+    Invite.find({receiver_id: req.profile , status: false}, (err, invites)=> {
         if(err || !invites){
             return res.json ({error : "Could not find any invites"});
         }
         else {
-            return res.json (invites);
+            /*return res.json (invites);*/
+
+            for (var i= 0 ; i< invites.length; i++){
+                console.log("offset:", req.profile.offset);
+                var hours = req.profile.offset/60;
+                console.log("hours: ", hours)
+                var minutes = hours*60;
+                console.log("mints: ", minutes);
+                var seconds = -1 * (minutes*60000);
+                console.log("seconds: ", seconds);
+                var result= new Date(invites[i].match_time)
+                invites[i].match_time = new Date(result.getTime()+ seconds);
+
+            }
+
+            return res.json(invites)
         }
     })
 }
@@ -347,3 +369,16 @@ exports.rejectProof = (req, res) => {
         }
     })
 }
+
+/*function getUtcTime(offset, time) {
+    var hours = offset/60;
+    console.log("hours: ", hours)
+    var minutes = hours*60;
+    console.log("mints: ", minutes);
+    var seconds = minutes*60000;
+    console.log("seconds: ", seconds);
+    console.log("time before : ", time)
+    var time = (new Date(time))
+    time  =time + parseInt(seconds)
+    console.log(time)
+}*/

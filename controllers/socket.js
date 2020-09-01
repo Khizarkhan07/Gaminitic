@@ -1,8 +1,8 @@
-const Chat = require("./models/chat");
-const Message = require("./models/message");
-const User = require("./models/user");
-const Group = require("./models/group");
-const GroupMessage = require("./models/groupMessage");
+const Chat = require("../models/chat");
+const Message = require("../models/message");
+const User = require("../models/user");
+const Group = require("../models/group");
+const GroupMessage = require("../models/groupMessage");
 const {http} = require("../index")
 
 const socket = require("socket.io")(http);

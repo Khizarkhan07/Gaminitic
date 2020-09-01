@@ -372,7 +372,7 @@ exports.resloveDispute = (req, res) => {
 }
 
 exports.disputes= (req, res)=> {
-
+    console.log("here")
     Match.find({is_dispute: true}).lean()
         .populate("dispute_user_id", 'name')
         .populate("user1_id", "name")
@@ -380,6 +380,22 @@ exports.disputes= (req, res)=> {
         .populate("game_id", "name")
         .populate("under_review_by", "name")
         .exec((err, match)=> {
+
+            for (var i=0 ; i< match.length ; i++){
+                console.log("offset:", -300);
+                var hours = -300/60;
+                console.log("hours: ", hours)
+                var minutes = hours*60;
+                console.log("mints: ", minutes);
+                var seconds = -1 * (minutes*60000);
+                console.log("seconds: ", seconds);
+                console.log("before: ", new Date(match[i].match_time));
+                var result= new Date(match[i].match_time)
+                match[i].match_time = new Date(result.getTime()+ seconds);
+                console.log("after: ", new Date(match[i].match_time));
+
+            }
+
              res.render('disputes', {match})
         })
 }
