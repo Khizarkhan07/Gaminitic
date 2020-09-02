@@ -6,7 +6,10 @@ async function fetchData(url, id, method) {
 
 
         $("#btn-login").attr("disabled", true);
-        document.getElementById("spinner").style.display = "block";
+
+        document.getElementById("btn-login").style.display = "none";
+
+        document.getElementById("btn-spinner").style.display = "block";
 
     });
 
@@ -32,6 +35,10 @@ async function fetchData(url, id, method) {
                 $("#btn-login").show();
 
             });
+
+            document.getElementById("btn-login").style.display = "none";
+
+            document.getElementById("btn-spinner").style.display = "none";
             diplayAlerts(err.msg, "danger");
 
         });
@@ -95,6 +102,6 @@ function diplayAlerts(err, classy){
 
 function hideme() {
     $(document).ready(function() {
-        $("#btn-login").hide();
+
     });
 }
