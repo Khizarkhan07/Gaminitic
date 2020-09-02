@@ -36,12 +36,12 @@
 
 
                     <br>
-                    <div class="d-flex justify-content-center links">
+                    <div id="login-div" class="d-flex justify-content-center links">
                         <button id="btn-login"  class="btn btn-primary">Login</button>
                     </div>
                 </div>
 
-                <div class="card-footer">
+                <div  class="card-footer">
                     <div class="d-flex justify-content-center links">
                         <a id="anchor" href="/forgot-password"> Forgot your password?</a>
                     </div>
@@ -65,6 +65,12 @@
 
 
     async function fetchData(url, id, method) {
+
+
+        $(document).ready(function() {
+            $("#btn-login").attr("disabled", true);
+        });
+
         event.preventDefault();
 
             const formData = document.getElementById(id);
@@ -85,6 +91,7 @@
                     console.log(err.msg)
 
                     diplayAlerts(err.msg, "danger");
+
                 });
             } else {
 
@@ -130,12 +137,17 @@
 
 
     function diplayAlerts(err, classy){
-        let node = document.createElement("p"); // Create a <li> node
+
+        $(document).ready(function() {
+            $("#btn-login").attr("disabled", false);
+        });
+
+        let node = document.createElement("p");
         node.setAttribute("class","alert alert-"+classy);
         let t = document.createTextNode(err);
         node.appendChild(t);
         document.getElementById("alert-tab").appendChild(node);
-        //setTimeout(function(){ document.getElementById("error-alerts").removeChild(node) }, 5000);
+        setTimeout(function(){ document.getElementById("alert-tab").removeChild(node) }, 5000);
     }
 
 
