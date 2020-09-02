@@ -67,7 +67,9 @@ require("./controllers/socket")
 
 app.use(function (err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
-        res.status(401).json({error: "Unauthorized request"});
+        return res.status(401).json( {
+            errors: [{msg:"Unauthorized Request"}],
+        });
     }
 });
 
