@@ -70,7 +70,7 @@
             const formData = document.getElementById(id);
             var body = JSON.stringify(Object.fromEntries(new FormData(formData)));
             console.log(body);
-            let response = await fetch("http://localhost:8080" + url, {
+            let response = await fetch("https://gaminatic.hexaadev.com" + url, {
                 method: method,
                 body,
                 headers: {
