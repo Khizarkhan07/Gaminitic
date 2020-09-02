@@ -22,7 +22,7 @@ exports.adminSignin =  (req, res) => {
 
         User.findOne({email, role: 'superadmin'}, (err, user) => {
             if (err || !user) {
-                return res.render('login',{ layout: 'main1.hbs' ,error:"User deosnot exist"})
+                return res.render('login',{})
             }
             if (!user.authenticate(password)) {
                 return res.render('login', {layout: 'main1.hbs', error: "email and password donot match"})
