@@ -6,9 +6,7 @@ const {requireSignin} = require("../controllers/auth");
 const {matchById} = require("../controllers/invite");
 const {userById} = require("../controllers/user");
 
-router.get("/", ((req, res) =>{
-    res.render('login', {layout: "main1.hbs"})
-} ))
+
 
 router.get("/login", ((req, res) =>{
     res.render('login', {layout: "main1.hbs"})

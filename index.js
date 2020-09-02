@@ -64,6 +64,13 @@ exports.http =http
 
 require("./controllers/socket")
 
+
+app.use(function (err, req, res, next) {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).json({error: "Unauthorized request"});
+    }
+});
+
 http.listen(port, () => {
     console.log("Running on Port: " + port);
 });

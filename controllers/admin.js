@@ -22,10 +22,10 @@ exports.adminSignin =  (req, res) => {
 
         User.findOne({email, role: 'superadmin'}, (err, user) => {
             if (err || !user) {
-                return res.render('login',{error:"User deosnot exist"})
+                return res.render('login',{ layout: 'main1.hbs' ,error:"User deosnot exist"})
             }
             if (!user.authenticate(password)) {
-                return res.render('login', {error: "email and password donot match"})
+                return res.render('login', {layout: 'main1.hbs', error: "email and password donot match"})
             }
 
             const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);

@@ -12,7 +12,7 @@
 
         <div id="side-menu" class="list-group list-group-flush">
             <label id="name-tag" class="list-group-item list-group-item-action bg-light"><b></b></label>
-            <a href="/users" id="user-tab" class="list-group-item list-group-item-action bg-light">Users</a>
+            <a  href="/users"  id="user-tab" class="list-group-item list-group-item-action bg-light">Users</a>
             <a  href="/disputes" class="list-group-item list-group-item-action bg-light">Disputes</a>
             <a  href="/config" class="list-group-item list-group-item-action bg-light">Configurations</a>
             <a id="login-tab" href="/login" class="list-group-item list-group-item-action bg-light">Login</a>
@@ -39,7 +39,7 @@
                 a.classList.add("list-group-item")
                 a.classList.add("list-group-item-action")
                 a.classList.add("bg-light")
-                a.href = "https://www.gaminatic.hexaadev.com/login";
+                a.href = "/login";
                 document.getElementById('side-menu').appendChild(a);
 
                 //logout
@@ -62,6 +62,17 @@
             }
         }
 
-
+        function users() {
+            $.ajax({
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                },
+                url: '/users',
+                success: function () {
+                    console.log("succcess")
+                    window.location.href= '/users_get'
+                }
+            });
+        }
 
     </script>
