@@ -3,12 +3,12 @@
 ">
 
     <div class="col-md-6">
-    {{#if error}}
-        <div class="alert alert-danger" role="alert">
-            {{error}}
+
+        <div id="alert-tab" role="alert">
+
         </div>
-    {{/if}}
-        <form class="margin" action="/admin_signin" METHOD="POST">
+
+        <form id="form-data" class="margin" action="/admin_signin" METHOD="POST" onsubmit="fetchData('/admin_signin','form-data', 'POST')">
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-center links">
@@ -63,57 +63,80 @@
     }
 
 
-    $(document).ready(function() {
-        var testing = false;
-        $('#btn-login').on('click', function() {
 
+    async function fetchData(url, id, method) {
+        event.preventDefault();
 
-            $.ajax({
-                url: $('form').attr('action'),
-                type: 'POST',
-                data: $('form').serialize(),
-                async: false,
-                success: function(data) {
-                    if (data)
-                    {
-                        testing = true;
-                        $('form').attr('action', '/admin_signin');
-                        $('form').submit();
-                    }
-                    else
-                    {
-                        alert('Your username/password are incorrect');
-                    }
+            const formData = document.getElementById(id);
+            var body = JSON.stringify(Object.fromEntries(new FormData(formData)));
+            console.log(body);
+            let response = await fetch("http://localhost:8080" + url, {
+                method: method,
+                body,
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
                 },
-                error: function() {
-                    alert('There has been an error, please alert us immediately');
-                }
             });
+            let result = await response.json();
 
-            return testing;
-        });
-    });
+            if (response.status >= 400 && response.status < 600) {
+                result.errors.forEach((err) => {
+                    console.log(err.msg)
+
+                    diplayAlerts(err.msg, "danger");
+                });
+            } else {
+
+                if (typeof(Storage) !== "undefined") {
+                    // Store
+                    const token = result.user.token;
+                    const _id = result.user._id;
+                    const name = result.user.name;
+                    const email = result.user.email;
+                    const role = result.user.role;
+                    localStorage.setItem("token", token)
+                    localStorage.setItem("_id", _id)
+                    localStorage.setItem("name", name)
+                    localStorage.setItem("email", email)
+                    localStorage.setItem("role", role)
+
+                    window.location.href= '/disputes'
+                    // Retrieve
+
+                    if(localStorage.getItem("token")){
+                        var a = document.createElement('a');
+                        var linkText = document.createTextNode("Logout");
+                        a.appendChild(linkText);
+                        a.classList.add("list-group-item")
+                        a.classList.add("list-group-item-action")
+                        a.classList.add("bg-light")
+                        a.href = "https://www.gaminatic.hexaadev.com/login";
+                        document.getElementById('side-menu').appendChild(a);
+                    }
+
+                    if(localStorage.getItem("name")) {
+                        // Store
+                        var Username = localStorage.getItem("name")
+                        // Retrieve
+                        document.getElementById("name-tag").innerHTML = "Welcome " + Username;
 
 
-    /*function submit() {
+                    }
+                }
 
-        $.ajax({
-            url: '/admin_signin',
-            type: "POST",
-            data: {
-                email: $("#email").val(),
-                password:$("#pass").val()
-            },
-            success: function(data, textStatus, jqXHR) {
-                window.location.href= '/disputes'
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert(errorThrown);
             }
+        }
 
-        });
 
- //STOP default action
+    function diplayAlerts(err, classy){
+        let node = document.createElement("p"); // Create a <li> node
+        node.setAttribute("class","alert alert-"+classy);
+        let t = document.createTextNode(err);
+        node.appendChild(t);
+        document.getElementById("alert-tab").appendChild(node);
+        //setTimeout(function(){ document.getElementById("error-alerts").removeChild(node) }, 5000);
+    }
 
-    }*/
+
 </script>

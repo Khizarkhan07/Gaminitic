@@ -11,46 +11,52 @@ const {sendEmail} = require('../helpers/index')
 
 exports.adminSignin =  (req, res) => {
     console.log("here")
-    let form = new formidable.IncomingForm();
-    form.keepExtensions = true;
+    const email = req.body.email.toLowerCase();
+    const password = req.body.password;
 
-    form.parse(req, (err, fields)=> {
-        const {password} = fields;
-        const email = fields.email.toLowerCase();
-        console.log(email)
-        console.log(password)
 
-        User.findOne({email, role: 'superadmin'}, (err, user) => {
-            if (err || !user) {
-                return res.render('login',{})
-            }
-            if (!user.authenticate(password)) {
-                return res.render('login', {layout: 'main1.hbs', error: "email and password donot match"})
-            }
+    User.findOne({email, role: 'superadmin'}, (err, user) => {
+        if (err || !user) {
+            return res.status(400).json( {
+                errors: [{msg:"User does not exists"}],
+            });
+        }
+        if (!user.authenticate(password)) {
+            return res.status(400).json( {
+                errors: [{msg:"Email and password doesnot match"}],
+            });
+        }
 
-            const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
+        const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
 
-            res.cookie("t", token, {expire: Date.now() + 999});
+        res.cookie("t", token, {expire: Date.now() + 999});
 
-            const {_id, name, email, role} = user;
+        const {_id, name, email, role} = user;
 
-            localStorage.setItem('jwt', token)
-            localStorage.setItem('_id', _id)
-            localStorage.setItem('name', name)
-            localStorage.setItem('email', email)
-            localStorage.setItem('role', role)
+        localStorage.setItem('jwt', token)
+        localStorage.setItem('_id', _id)
+        localStorage.setItem('name', name)
+        localStorage.setItem('email', email)
+        localStorage.setItem('role', role)
+        console.log("here findin")
+        Match.find({is_dispute: true}).lean()
+            .populate("dispute_user_id", 'name')
+            .populate("user1_id", "name")
+            .populate("user2_id", "name")
+            .populate("game_id", "name")
+            .populate("under_review_by", "name")
 
-            Match.find({is_dispute: true}).lean()
-                .populate("dispute_user_id", 'name')
-                .populate("user1_id", "name")
-                .populate("user2_id", "name")
-                .populate("game_id", "name")
-                .populate("under_review_by", "name")
-                .exec((err, match)=> {
-                    res.render('disputes', {match, login: {user: {_id, name , email, token, role}}})
-                })
-        });
-    })
+            .exec((err, match)=> {
+               /* res.status(200).render('disputes', {match, login: {user: {_id, name , email, token, role}}})
+            */
+                return res.json({
+                    success: true,
+                    user: {_id, name , email, token, role}
+                });
+
+            })
+    });
+
 }
 
 
