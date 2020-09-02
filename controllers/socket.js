@@ -16,7 +16,7 @@ socket.on("connection", socket => {
 
     addClientToMap('khizar', socket.id);
     console.log(userSocketIdMap)
-    /*fs.readFile(__dirname + '/assets/images/image.jpg', function(err, buf){
+    /*fs.readFile(__dirname + '/js/images/image.jpg', function(err, buf){
         // it's possible to embed binary data
         // within arbitrarily-complex objects
         socket.emit('image', { image: true, buffer: buf });

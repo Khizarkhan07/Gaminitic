@@ -325,7 +325,7 @@ exports.uploadProof = (req, res)=>{
                             var temp = '\\images\\' + Math.random()+files.photo.name ;
                             console.log(temp);
 
-                            var newpath = 'C:\\Users\\unique\\WebstormProjects\\gaminatic\\assets' + temp;
+                            var newpath = 'C:\\Users\\unique\\WebstormProjects\\gaminatic\\js' + temp;
                             //console.log('path: '+ newpath);
                             fs.rename(oldpath, newpath, function (err) {
                                 if (err) throw err;

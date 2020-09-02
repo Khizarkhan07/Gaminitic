@@ -11,7 +11,7 @@ const http = require("http").Server(app);
 var fs = require('fs'); // required for file serving
 
 
-app.use(express.static('assets')); //for serving images and assets
+app.use(express.static('assets')); //for serving images and js
 
 app.use(express.static(path.join(__dirname, '/views'))) //for serving handlebars admin views
 //app.use(express.static(path.join(__dirname, '/public'))) //for serving handlebars admin views
