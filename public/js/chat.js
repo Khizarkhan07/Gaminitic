@@ -5,7 +5,7 @@ var messages = document.getElementById("messages");
   $("form").submit(function(e) {
     let li = document.createElement("li");
     e.preventDefault(); // prevents page reloading
-    socket.emit("group message", $("#message").val());
+    socket.emit("group creation", $("#message").val());
 
     messages.appendChild(li).append($("#message").val());
     let span = document.createElement("span");

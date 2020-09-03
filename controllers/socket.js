@@ -3,6 +3,7 @@ const Message = require("../models/message");
 const User = require("../models/user");
 const Group = require("../models/group");
 const GroupMessage = require("../models/groupMessage");
+const GroupInvite = require("../models/group_invite");
 const {http} = require("../index")
 
 const socket = require("socket.io")(http);
@@ -185,41 +186,41 @@ socket.on("connection", socket => {
 
     socket.on("group creation", function (data) {
         const creator_id= "5f2a789993af8927bc4a38f0";
-        const participant1_id= "5f2bdf1542983921e098a148";
-        const participant2_id= "5f2d339c38916545b4cd0999";
+        const participantArray = ["5f2bdf1542983921e098a148", "5f2d339c38916545b4cd0999"]
         User.findById(creator_id , (err, creator)=> {
             if(err || !creator) {
                 return res.json({error: "Creator not found"})
             }
             else {
-                User.findById(participant1_id , (err, participant1)=> {
-                    if(err || !creator) {
-                        return res.json({error: "Participant1 not found"})
+                let group = new Group();
+                group.creator = creator;
+                group.name = "GAMERS"
+                for (var i=0; i< participantArray.length; i++){
+                    User.findById(participantArray[i] , (err, participant)=> {
+                        if(err || !participant) {
+                            return res.json({error: "Participant not found"})
+                        }
+                        else {
+                            group.participants.push(participant);
+                            let groupInvite = new GroupInvite();
+                            groupInvite.sender_id= creator;
+                            groupInvite.receiver_id= participant;
+                            groupInvite.groupName = "GAMERS";
+                            groupInvite.created_at = Date.now();
+                            groupInvite.save();
+                        }
+                    }).select("name email _id")
+
+                }
+                group.save((err, group)=> {
+                    if(err){
+                        console.log("group not created");
                     }
                     else {
-                        User.findById(participant2_id , (err, participant2)=> {
-                            if(err || !creator) {
-                                return res.json({error: "Participant2 not found"})
-                            }
-                            else {
-                                let group = new Group();
-                                group.creator = creator;
-                                group.participants.push(participant1, participant2);
-                                group.name = "test group"
-                                group.save((err, group)=> {
-                                    if(err){
-                                        console.log("group not created");
-                                    }
-                                    else {
-                                        //socket.to('test group').emit('group creation' , {message: "you are added to a group"} );
-                                        console.log("group created")
-                                    }
-                                })
-                            }
-                        }).select("name email _id")
+                        //socket.to('test group').emit('group creation' , {message: "you are added to a group"} );
+                        console.log("group created")
                     }
-                }).select("name email _id")
-
+                })
             }
         }).select("name email _id")
     })
