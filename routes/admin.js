@@ -29,7 +29,7 @@ router.get("/disputes",  disputes)
 router.get("/disputes/:matchId", hasPermission , getDispute)
 
 router.post("/change_status/", requireSignin ,hasPermission, changeStatus)
-router.post("/resolve_dispute/", hasPermission ,resloveDispute)
+router.post("/resolve_dispute/",requireSignin ,hasPermission ,resloveDispute)
 
 router.post("/admin_forgot_password", forgotPassword);
 

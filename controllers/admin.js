@@ -335,25 +335,28 @@ exports.changeStatus = (req, res)=> {
 }
 
 exports.resloveDispute = (req, res) => {
-    let form = new formidable.IncomingForm();
-    form.keepExtensions = true;
 
-    form.parse(req, (err, fields)=> {
-        const {winner_id, loser_id, match_id} = fields;
+        const {winner_id, loser_id, match_id} = req.body;
 
         Match.findById(match_id, (err, match)=> {
             if(err||!match){
-                return res.json ({error: "Match not found"});
+                return res.status(400).json( {
+                    errors: [{msg:"Match not found"}],
+                });
             }
             else {
                 User.findById(winner_id, (err, winner)=> {
                     if(err){
-                        return res.json ({error: "Winner not found"})
+                        return res.status(400).json( {
+                            errors: [{msg:"Winner not found"}],
+                        });
                     }
                     else {
                         User.findById(loser_id, (err, loser)=> {
                             if(err){
-                                return res.json ({error: "loser not found"})
+                                return res.status(400).json( {
+                                    errors: [{msg:"Loser not found"}],
+                                });
                             }
                             else {
                                 if(match.under_review_by._id = localStorage.getItem('_id')){
@@ -363,15 +366,21 @@ exports.resloveDispute = (req, res) => {
                                     match.is_dispute = false;
                                     match.save((err, match)=> {
                                         if(err){
-                                            return res.json ({error: "Error closing the match"})
+                                            return res.status(400).json( {
+                                                errors: [{msg:"Error closing the match"}],
+                                            });
                                         }
                                         else {
-                                            return res.json (match)
+                                            return res.json({
+                                                success: true
+                                            });
                                         }
                                     })
                                 }
                                 else {
-                                    return res.json ({error: "Underreview by another admin"})
+                                    return res.status(400).json( {
+                                        errors: [{msg:"Dispute is under review by another admin"}],
+                                    });
                                 }
 
 
@@ -381,7 +390,7 @@ exports.resloveDispute = (req, res) => {
                 }).select("name email _id")
             }
         })
-    })
+
 
 
 

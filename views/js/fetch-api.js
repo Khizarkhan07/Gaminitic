@@ -96,8 +96,10 @@ async function postData(url, id, method) {
         $("#btn-login").attr("disabled", true);*/
 
         document.getElementById("assign-btn").style.display = "none";
+        document.getElementById("resolve-btn").style.display = "none";
 
         document.getElementById("btn-spinner").style.display = "block";
+        document.getElementById("resolve-spinner").style.display = "block";
 
     });
 
@@ -131,8 +133,10 @@ async function postData(url, id, method) {
                         $("#btn-login").attr("disabled", true);*/
 
                 document.getElementById("assign-btn").style.display = "block";
+                document.getElementById("resolve-btn").style.display = "block";
 
                 document.getElementById("btn-spinner").style.display = "none";
+                document.getElementById("resolve-spinner").style.display = "none";
 
             });
         });
@@ -141,8 +145,10 @@ async function postData(url, id, method) {
             // Retrieve
         diplayAlerts("Action Successful!", 'success')
         document.getElementById("assign-btn").style.display = "block";
+        document.getElementById("resolve-btn").style.display = "block";
 
         document.getElementById("btn-spinner").style.display = "none";
+        document.getElementById("resolve-spinner").style.display = "none";
 
     }
 }
@@ -151,7 +157,6 @@ async function postData(url, id, method) {
 function diplayAlerts(err, classy){
 
     $(document).ready(function() {
-        document.getElementById("spinner").style.display = "none";
         $("#btn-login").attr("disabled", false);
     });
 

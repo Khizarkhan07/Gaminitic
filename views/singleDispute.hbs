@@ -100,7 +100,7 @@
                         <hr>
                     </div>
 
-                    <form action="http://localhost:8080/resolve_dispute/" method="POST" >
+                    <form id="resolve-form" action="/resolve_dispute" method="POST" onsubmit="postData('/resolve_dispute','resolve-form', 'POST')">
 
                         <label for="sel1">Winner:</label>
                         <select class="form-control" name="winner_id" required>
@@ -115,9 +115,11 @@
                         </select>
 
                         <input type="hidden" value="{{dispute._id}}" name="match_id"/>
-                        <button style="margin-top: 10px" class="btn btn-danger" type="submit">
+                        <button id="resolve-btn" style="margin-top: 10px; display: block" class="btn btn-danger" type="submit">
                             Resolve
                         </button>
+                        <button  disabled id="resolve-spinner"  class="btn btn-danger" style="margin-top: 10px; display: none;" > <i class="fa fa-circle-o-notch fa-spin"></i>Loading</button>
+
                     </form>
                 </div>
             </div>
