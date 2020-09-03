@@ -90,16 +90,16 @@ async function postData(url, id, method) {
 
 
 
-    /*$(document).ready(function() {
+    $(document).ready(function() {
 
+/*
+        $("#btn-login").attr("disabled", true);*/
 
-        $("#btn-login").attr("disabled", true);
-
-        document.getElementById("btn-login").style.display = "none";
+        document.getElementById("assign-btn").style.display = "none";
 
         document.getElementById("btn-spinner").style.display = "block";
 
-    });*/
+    });
 
     event.preventDefault();
 
@@ -122,13 +122,27 @@ async function postData(url, id, method) {
         result.errors.forEach((err) => {
             console.log(err.msg)
 
+
             diplayAlerts(err.msg, "danger");
 
+            $(document).ready(function() {
+
+                /*
+                        $("#btn-login").attr("disabled", true);*/
+
+                document.getElementById("assign-btn").style.display = "block";
+
+                document.getElementById("btn-spinner").style.display = "none";
+
+            });
         });
     } else {
 
             // Retrieve
-            diplayAlerts("Role assigned successfully", 'success')
+        diplayAlerts("Role assigned successfully", 'success')
+        document.getElementById("assign-btn").style.display = "block";
+
+        document.getElementById("btn-spinner").style.display = "none";
 
     }
 }
