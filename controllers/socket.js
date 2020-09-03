@@ -196,12 +196,12 @@ socket.on("connection", socket => {
                 group.creator = creator;
                 group.name = "GAMERS"
                 for (var i=0; i< participantArray.length; i++){
-                    User.findById(participantArray[i] , (err, participant)=> {
+                    User.findById(participantArray[i], (err, participant)=> {
                         if(err || !participant) {
                             return res.json({error: "Participant not found"})
                         }
                         else {
-                            group.participants.push(participant);
+                            //group.participants.push(participant);
                             let groupInvite = new GroupInvite();
                             groupInvite.sender_id= creator;
                             groupInvite.receiver_id= participant;
@@ -218,11 +218,60 @@ socket.on("connection", socket => {
                     }
                     else {
                         //socket.to('test group').emit('group creation' , {message: "you are added to a group"} );
-                        console.log("group created")
+
                     }
                 })
             }
         }).select("name email _id")
+    })
+
+
+
+    socket.on("group invite", function (data) {
+        const group_id= "5f50b64b6afda02a50b835d0";
+        const creator_id= "5f2a789993af8927bc4a38f0";
+        const participantArray = ["5f4d27695835a5758b8519a1"]
+
+        User.findById(creator_id, (err, creator)=>{
+            if(err||!creator){
+                console.log("sender not found");
+                return
+            }
+            else {
+                Group.findById(group_id, (err, group)=> {
+                    if(err||!group){
+                        console.log("group not found");
+                        return;
+                    }
+                    else if(group.creator._id != creator_id){
+                        console.log("you are not the owner")
+                        return;
+                    }
+                    else {
+                        for (var i=0 ; i<participantArray.length; i++){
+                            User.findById(participantArray[i] , (err, participant)=> {
+                                if(err || !participant) {
+                                    return res.json({error: "Participant not found"})
+                                }
+                                else {
+                                    group.participants.push(participant);
+                                    let groupInvite = new GroupInvite();
+                                    groupInvite.sender_id= creator;
+                                    groupInvite.receiver_id= participant;
+                                    groupInvite.groupName = "GAMERS";
+                                    groupInvite.created_at = Date.now();
+                                    groupInvite.save();
+                                }
+                            }).select("name email _id")
+
+                        }
+                    }
+
+                })
+            }
+        })
+
+
     })
 
     socket.on("group message" ,function (data) {
