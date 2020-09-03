@@ -4,11 +4,12 @@ const router = express.Router();
 const {gameById} = require("../controllers/game");
 const {userById} = require("../controllers/user");
 const {sendInvite, pendingInvites, acceptInvites,
-    upcoming, matchesWon, matcheslost , disputes, matchById, uploadProof, acceptProof, rejectProof} = require("../controllers/invite");
+    upcoming, matchesWon, matcheslost, pendingGroupInvites , disputes, matchById, uploadProof, acceptProof, rejectProof} = require("../controllers/invite");
 const {requireSignin} = require("../controllers/auth");
 
 router.post("/send_invite", requireSignin, sendInvite);
 router.get("/user_invites/:userId",requireSignin ,pendingInvites);
+router.get("/group_invites/",requireSignin ,pendingGroupInvites);
 
 router.put("/accept_invite",requireSignin ,acceptInvites);
 router.get("/upcoming_matches/",requireSignin ,upcoming);

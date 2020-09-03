@@ -1,7 +1,10 @@
 const moongose = require ("mongoose");
 
 const GroupInvite = new moongose.Schema({
-
+    status: {
+      type: Boolean,
+      default: false
+    },
     sender_id: {
         type: moongose.Schema.ObjectId,
         ref: "user"
@@ -10,10 +13,7 @@ const GroupInvite = new moongose.Schema({
         type: moongose.Schema.ObjectId,
         ref: "user"
     },
-    is_friend: {
-        type: Boolean,
-        default: false
-    },
+
     groupName : {
         type: String
     },

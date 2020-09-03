@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Game = require("../models/game");
 const Invite = require("../models/invite")
+const GroupInvite = require("../models/group_invite")
 const Match = require("../models/match")
 const Config = require("../models/configuration")
 const _ = require('lodash')
@@ -138,6 +139,20 @@ exports.pendingInvites =(req, res)=> {
 
             }
 
+            return res.json(invites)
+        }
+    })
+}
+
+
+
+exports.pendingGroupInvites =(req, res)=> {
+    GroupInvite.find({receiver_id: req.auth._id , status: false}, (err, invites)=> {
+        if(err || !invites){
+            return res.json ({error : "Could not find any invites"});
+        }
+        else {
+            /*return res.json (invites);*/
             return res.json(invites)
         }
     })
