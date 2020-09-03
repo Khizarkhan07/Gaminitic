@@ -22,7 +22,7 @@ router.post("/admin_signin" , adminSignin);
 router.get("/users" ,hasbothPermission ,allusers)
 router.get("/user/:userId",  hasbothPermission ,getUser)
 router.get("/config/",  hasbothPermission ,getConfig)
-router.post("/assign_role",  hasPermission , assignRole)
+router.post("/assign_role", requireSignin ,hasPermission , assignRole)
 router.post("/set_limit" , setInviteLimit)
 
 router.get("/disputes",  disputes)

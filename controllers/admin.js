@@ -237,28 +237,30 @@ exports.hasPermission = (req, res, next)=>{
 
 
 exports.assignRole = (req, res) => {
-    let form = new formidable.IncomingForm();
-    form.keepExtensions = true;
+    console.log("user")
+    const {user_id, role} = req.body;
 
-    form.parse(req, (err, fields)=> {
-        const {user_id, role} = fields;
-
-        User.findOne({_id:user_id}, (err, user)=> {
-            if(err|| !user){
-                return res.render('singleUser',{error:"invalid user id"})
+    User.findOne({_id:user_id}, (err, user)=> {
+        if(err|| !user){
+            return res.status(400).json( {
+                errors: [{msg:"User does not exists"}],
+            });
+        }
+        console.log("user fournd")
+        updatedFiled = {
+            role : role.toLowerCase()
+        }
+        user = _.extend(user, updatedFiled);
+        user.save((err, user)=> {
+            if(err || !user){
+                return res.json(err)
             }
-            updatedFiled = {
-                role : role.toLowerCase()
-            }
-            user = _.extend(user, updatedFiled);
-            user.save((err, user)=> {
-                if(err || !user){
-                    return res.json(err)
-                }
-                return res.render('singleUser',{user:user, message: "Role assigned"})
-            })
+            return res.json({
+                success: true
+            });
         })
     })
+
 
 }
 

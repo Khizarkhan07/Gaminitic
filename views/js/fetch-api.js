@@ -85,6 +85,55 @@ async function fetchData(url, id, method) {
 }
 
 
+
+async function postData(url, id, method) {
+
+
+
+    /*$(document).ready(function() {
+
+
+        $("#btn-login").attr("disabled", true);
+
+        document.getElementById("btn-login").style.display = "none";
+
+        document.getElementById("btn-spinner").style.display = "block";
+
+    });*/
+
+    event.preventDefault();
+
+    const formData = document.getElementById(id);
+    var body = JSON.stringify(Object.fromEntries(new FormData(formData)));
+    console.log(body);
+    console.log(localStorage.getItem("token"));
+    let response = await fetch("http://localhost:8080" + url, {
+        method: method,
+        body,
+        headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+            "Content-Type": "application/json",
+        },
+    });
+    let result = await response.json();
+
+    if (response.status >= 400 && response.status < 600) {
+        result.errors.forEach((err) => {
+            console.log(err.msg)
+
+            diplayAlerts(err.msg, "danger");
+
+        });
+    } else {
+
+            // Retrieve
+            diplayAlerts("Role assigned successfully", 'success')
+
+    }
+}
+
+
 function diplayAlerts(err, classy){
 
     $(document).ready(function() {
