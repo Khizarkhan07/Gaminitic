@@ -28,7 +28,7 @@ router.post("/set_limit" , setInviteLimit)
 router.get("/disputes",  disputes)
 router.get("/disputes/:matchId", hasPermission , getDispute)
 
-router.post("/change_status/" ,hasPermission, changeStatus)
+router.post("/change_status/", requireSignin ,hasPermission, changeStatus)
 router.post("/resolve_dispute/", hasPermission ,resloveDispute)
 
 router.post("/admin_forgot_password", forgotPassword);

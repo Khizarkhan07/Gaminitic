@@ -26,7 +26,9 @@
 
 
     <div style="padding: 20px">
+        <div id="alert-tab" role="alert">
 
+        </div>
         <h4> {{dispute.game.name}} </h4>
         <div style="margin-top: 20px" class="row">
             <div class="col-md-8">
@@ -74,7 +76,7 @@
                         <hr>
                     </div>
 
-                    <form action="http://localhost:8080/change_status/" method="POST" >
+                    <form id="status-form" action="/change_status" method="POST" onsubmit="postData('/change_status','status-form', 'POST')" >
 
                         <label for="sel1">Status:</label>
                         <select class="form-control" name="status" required>
@@ -84,9 +86,12 @@
 
                         </select>
                         <input type="hidden" value="{{dispute._id}}" name="matchId"/>
-                        <button style="margin-top: 10px" class="btn btn-danger" type="submit">
+                        <button id="assign-btn" style="margin-top: 10px; display: block" class="btn btn-danger" type="submit">
                             Submit
                         </button>
+
+                        <button  disabled id="btn-spinner"  class="btn btn-danger" style="margin-top: 10px; display: none;" > <i class="fa fa-circle-o-notch fa-spin"></i>Loading</button>
+
                     </form>
                 </div>
 

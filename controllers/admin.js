@@ -266,61 +266,70 @@ exports.assignRole = (req, res) => {
 
 exports.changeStatus = (req, res)=> {
 
-    let form = new formidable.IncomingForm();
-    form.keepExtensions = true;
+    console.log("here")
+    const {matchId, status} = req.body;
 
-    form.parse(req, (err, fields)=> {
-        const {matchId, status} = fields;
+    const userId = req.auth._id
 
-        const userId = localStorage.getItem('_id');
-
-        Match.findById(matchId, (err, match)=> {
-            if(err||!match){
-                return res.json ({error: "Match not found"})
+    Match.findById(matchId, (err, match)=> {
+        if(err||!match){
+            return res.status(400).json( {
+                errors: [{msg:"Match does not exists"}],
+            });
+        }
+        User.findById(userId, (err, user)=> {
+            if(err||!user){
+                return res.status(400).json( {
+                    errors: [{msg:"User does not exists"}],
+                });
             }
-            User.findById(userId, (err, user)=> {
-                if(err||!user){
-                    return res.json ({error: "User not found"})
+            else {
+                if(!match.under_review_by){
+                    match.under_review_by = user;
+                    match.status= status;
+
+                    match.save((err, match)=> {
+                        if(err){
+                            return res.status(400).json( {
+                                errors: [{msg:"Error changing status"}],
+                            });
+                        }
+                        else {
+                            return res.json (match)
+                        }
+                    })
                 }
                 else {
-                    if(!match.under_review_by){
-                        match.under_review_by = user;
+
+                    if(match.under_review_by._id == userId){
+                        console.log("same user")
                         match.status= status;
 
                         match.save((err, match)=> {
                             if(err){
-                                return res.json ({error: "Error marking under review"})
+                                return res.status(400).json( {
+                                    errors: [{msg:"Error changing status"}],
+                                });
                             }
                             else {
-                                return res.json (match)
+                                return res.json({
+                                    success: true
+                                });
                             }
                         })
                     }
                     else {
-
-                        if(match.under_review_by._id == userId){
-                            console.log("same user")
-                            match.status= status;
-
-                            match.save((err, match)=> {
-                                if(err){
-                                    return res.json ({error: "Error marking under review"})
-                                }
-                                else {
-                                    return res.json (match)
-                                }
-                            })
-                        }
-                        else {
-                            return res.json ({error: "This dispute is under review by another admin"})
-                        }
+                        return res.status(400).json( {
+                            errors: [{msg:"Dispute is under review by another admin"}],
+                        });
                     }
-
                 }
-            }).select("name _id email")
+
+            }
+        }).select("name _id email")
         })
 
-    })
+
 
 
 }

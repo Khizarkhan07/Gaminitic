@@ -139,7 +139,7 @@ async function postData(url, id, method) {
     } else {
 
             // Retrieve
-        diplayAlerts("Role assigned successfully", 'success')
+        diplayAlerts("Action Successful!", 'success')
         document.getElementById("assign-btn").style.display = "block";
 
         document.getElementById("btn-spinner").style.display = "none";
