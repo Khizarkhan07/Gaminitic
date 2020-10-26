@@ -2,6 +2,7 @@ const User = require("../models/user");
 const Game = require("../models/game");
 const Invite = require("../models/invite")
 const GroupInvite = require("../models/group_invite")
+const Group = require("../models/group")
 const Match = require("../models/match")
 const Config = require("../models/configuration")
 const _ = require('lodash')
@@ -27,6 +28,18 @@ exports.matchById = (req, res, next, id)=> {
         });
 };
 
+exports.GroupInviteById = (req, res, next, id)=> {
+    GroupInvite.findById(id)
+        .exec((err, group)=>{
+            if(err|| !group){
+                return res.status(400).json({
+                    error: "invite not found"
+                });
+            }
+            req.invite = group;
+            next();
+        });
+};
 
 //send match invite to user if not blocked
 
@@ -213,6 +226,9 @@ exports.acceptInvites = (req, res)=> {
 }
 
 
+exports.acceptGroupInvites = (req, res)=> {
+    Group.findById(req.invite.)
+}
 //api to mark user calender with upcoming matches.
 exports.upcoming = (req, res) => {
 
